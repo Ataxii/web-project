@@ -31,7 +31,7 @@ function authenticated(req, res, next) {
 /**** Routes pour l'utilisateur ****/
 
 app.get('/', (req, res) => {
-    res.render('login');
+    res.render('main');
 });
 
 
@@ -41,22 +41,29 @@ app.get('/register', (req, res) => {
 })
 
 app.post('/register', (req, res) => {
-    var registerable = model.register(req.body.nameUser, req.body.passUser);
-    if (registerable) {
+    //faire un message en rouge avec l'erreur acssocié plustard
+    if(req.body.passUser != req.body.passUserConf){
         res.redirect('/register');
     }
-    res.redirect('/');
+    var registerable = model.register(req.body.nameUser, req.body.passUser);
+    if (registerable) {
+        res.redirect('/');
+    }
+    res.redirect('/register');
 });
 
 app.get('/login', (req, res) => {
-    res.render('../login');
+    res.render('login');
 });
 
 app.post('/login', (req, res) => {
+    if (req.session.user !== undefined) {
+        res.redirect('/profil');
+    }
     let login = model.login(req.body.nameUser, req.body.passUser);
     if (login < 0) { res.redirect('/login'); } else {
         req.session.user = login;
-        res.redirect('/');
+        res.redirect('/profil');
     }
 });
 

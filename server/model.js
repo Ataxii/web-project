@@ -2,13 +2,14 @@
 /* Module de recherche dans une base de recettes de cuisine */
 const Sqlite = require('better-sqlite3');
 
-let db = new Sqlite('db.sqlite');
+let db = new Sqlite('main.db');
 
 let idUser = 0;
 
 
 exports.register = (nameUser, passUser) => {
     if (this.isRegister(nameUser)) {
+        console.log("ahbon");
         return false;
     }
 
@@ -21,7 +22,6 @@ exports.register = (nameUser, passUser) => {
 exports.login = (nameUser, passUser) => {
     let idlog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ? AND passUser = ?').get(nameUser, passUser);
 
-    console.log(idlog.id);
     if (idlog.id !== undefined) {
         return idlog.id;
     } else return -1;
@@ -29,11 +29,8 @@ exports.login = (nameUser, passUser) => {
 
 exports.isRegister = (nameUser) => {
     let pseudolog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ?').get(nameUser);
+    return pseudolog !== undefined;
 
-    if (pseudolog.id !== undefined){
-        return false;
-    }
-    else return true;
 }
 
 
