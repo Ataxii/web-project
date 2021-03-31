@@ -17,7 +17,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.engine('html', mustache());
 app.set('view engine', 'html');
-app.set('views', './views');
+app.set('views', '../views');
+
+app.use(authenticated);
 
 function authenticated(req, res, next) {
     if (req.session.user !== undefined) {
@@ -26,18 +28,13 @@ function authenticated(req, res, next) {
     next();
 }
 
-app.use(authenticated);
+/**** Routes pour l'utilisateur ****/
 
 app.get('/', (req, res) => {
-    res.render('index');
+    res.render('login');
 });
 
 
-
-/**** Routes pour modifier les données ****/
-
-
-/**** Routes pour l'utilisateur ****/
 
 app.get('/register', (req, res) => {
     res.render('register');
@@ -52,7 +49,7 @@ app.post('/register', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login');
+    res.render('../login');
 });
 
 app.post('/login', (req, res) => {
