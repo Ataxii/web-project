@@ -8,17 +8,18 @@ let idUser = 0;
 
 
 exports.register = (nameUser, passUser) => {
-    if (this.login(nameUser, passUser) == -1) {
+    if (this.isRegister(nameUser)) {
         return false;
     }
-    let prepare = db.prepare('INSERT INTO user VALUES (@id, @nameUser, @passUser)');
+
+    let prepare = db.prepare('INSERT INTO userLogin VALUES (@id, @nameUser, @passUser)');
     prepare.run({ id: idUser, nameUser: nameUser, passUser: passUser });
     idUser++;
     return true;
 }
 
 exports.login = (nameUser, passUser) => {
-    let idlog = db.prepare('SELECT id FROM userLogin WHERE name = ? AND password = ?').get(nameUser, passUser);
+    let idlog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ? AND passUser = ?').get(nameUser, passUser);
 
     console.log(idlog.id);
     if (idlog.id !== undefined) {
@@ -26,13 +27,13 @@ exports.login = (nameUser, passUser) => {
     } else return -1;
 }
 
-exports.register = (nameUser) => {
-    let pseudolog = db.prepare('SELECT nameUser FROM userLogin WHERE name = ?').get(nameUser);
+exports.isRegister = (nameUser) => {
+    let pseudolog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ?').get(nameUser);
 
-    if (pseudolog.nameUser !== undefined){
-        return pseudolog.nameUser;
+    if (pseudolog.id !== undefined){
+        return false;
     }
-    else return -1;
+    else return true;
 }
 
 
@@ -42,6 +43,8 @@ exports.lenghtPassword = ( passUser) => {
     }
 }
 // fonction qui récup tout les utilisateurs (id, photo, pseudo) tableau de tableau+ recuperer les infos d'un utilisateur avec son id , + api centre d'interet (json -->parse --> require('fs')
-() => {
+exports.allUserinfo = () => {
+    let arrayOfUserInfo = [];
+
 
 }
