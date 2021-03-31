@@ -9,7 +9,6 @@ let idUser = 0;
 
 exports.register = (nameUser, passUser) => {
     if (this.isRegister(nameUser)) {
-        console.log("ahbon");
         return false;
     }
 
@@ -41,7 +40,15 @@ exports.lenghtPassword = ( passUser) => {
 }
 // fonction qui récup tout les utilisateurs (id, photo, pseudo) tableau de tableau+ recuperer les infos d'un utilisateur avec son id , + api centre d'interet (json -->parse --> require('fs')
 exports.allUserinfo = () => {
-    let arrayOfUserInfo = [];
 
+    let array = [];
 
+    let ids = db.prepare('SELECT id FROM userLogin');
+    for(let id in ids){
+        let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(id);
+        let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(id);
+        let info = { id: id, nameUser: pseudo , photo_de_profil : photo };
+        array.push(info);
+    }
+    return array;
 }
