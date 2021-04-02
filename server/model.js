@@ -40,9 +40,7 @@ exports.lenghtPassword = ( passUser) => {
 }
 // fonction qui récup tout les utilisateurs (id, photo, pseudo) tableau de tableau+ recuperer les infos d'un utilisateur avec son id , + api centre d'interet (json -->parse --> require('fs')
 exports.allUserinfo = () => {
-
     let array = [];
-
     let ids = db.prepare('SELECT id FROM userLogin');
     for(let id in ids){
         let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(id);
