@@ -20,6 +20,9 @@ exports.register = (nameUser, passUser) => {
 
 exports.login = (nameUser, passUser) => {
     let idlog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ? AND passUser = ?').get(nameUser, passUser);
+    if(idlog === undefined){
+        return -1;
+    }
 
     if (idlog.id !== undefined) {
         return idlog.id;
@@ -52,18 +55,13 @@ exports.allUserinfo = () => {
 }
 //
 exports.userInfo = (id) => {
-    let array = [];
-    let ids = db.prepare('SELECT id = ? FROM userLogin').get(id);
-    for(id in ids){
-        let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(id);
-        let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(id);
-        let biographie = db.prepare('SELECT biographie FROM userProfil WHERE id = ?').get(id);
-        let etudes = db.prepare('SELECT etudes FROM userProfil WHERE id = ?').get(id);
-        let contact = db.prepare('SELECT contact FROM userProfil WHERE id = ?').get(id);
-        let info = { id: id, nameUser: pseudo , photo_de_profil : photo , biographie : biographie , etudes : etudes , contact : contact };
-        array.push(info);
-    }
-    return array;
+    let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(id);
+    let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(id);
+    let biographie = db.prepare('SELECT biographie FROM userProfil WHERE id = ?').get(id);
+    let etudes = db.prepare('SELECT etudes FROM userProfil WHERE id = ?').get(id);
+    let contact = db.prepare('SELECT contact FROM userProfil WHERE id = ?').get(id);
+    let info = { id: id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil , biographie : biographie.biographie , etudes : etudes.etudes , contact : contact.contact };
+    return info;
 }
 
 // fonction create/ set avec un id et tout les infos

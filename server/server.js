@@ -55,11 +55,10 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    if (req.session.user !== undefined) {
-        res.redirect('/profil');
-    }
-    let login = model.login(req.body.nameUser, req.body.passUser);
-    if (login < 0) { res.redirect('/login'); } else {
+    let login = model.login(req.body.nameUser, req.body.passUser); // login() return id
+    if (login < 0) {
+        res.redirect('/login');
+    } else {
         req.session.user = login;
         res.redirect('/profil');
     }
@@ -70,12 +69,21 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+app.get('/profil', is_authenticated, (req,res) => {
+    let info = model.userInfo(req.session.user);
+    res.render('profil', info);
+})
+
+app.post('/profil', (req, res) => {
+    res.redirect('/profil');
+});
+
 function is_authenticated(req, res, next) {
 
     if (req.session.user !== undefined) {
         return next();
     }
-    res.status(401).send('Authentication required');
+    return res.status(401).send('Authentication required');
 }
 
 app.listen(3000, () => console.log('listening on http://localhost:3000'));

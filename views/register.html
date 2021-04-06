@@ -8,43 +8,42 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
-    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-    <link rel="manifest" href="/docs/5.0/assets/img/favicons/manifest.json">
-    <link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
-    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
     <meta name="theme-color" content="#7952b3">
-
-
 
 </head>
 <body class="text-center">
 
-<main class="form-signin col align-self-center">
-    <form action="/register" method="post">
-        <img class="mb-4" src="https://cdn.discordapp.com/attachments/595293178668777485/823576553790111764/Capturegf.JPG" alt="" width="72" height="57">
-        <h1 class="h3 mb-3 fw-normal">Inscription</h1>
 
-        <div class="form-floating">
-            <input type="text" class="form-control" id="floatingInput" name="nameUser">
+<main class="form-signin row col align-self-center mb-0">
+    <form action="/register" method="post" class="mx-auto">
+        <img class="mb-4 mt-2" src="https://cdn.discordapp.com/attachments/595293178668777485/823576553790111764/Capturegf.JPG" alt="" width="72" height="57">
+        <h1 class="h3 mb-3 fw-normal">Connexion</h1>
+
+        <div class="text-danger">
+            {{errorMessage}}
+        </div>
+
+        <div class="form-floating mt-5">
             <label for="floatingInput">Pseudo</label>
+            <input type="text" class="form-control" placeholder="Identifiant" id="floatingInput" name="nameUser">
+
         </div>
-        <div class="form-floating">
+        <div class="form-floating mt-3">
+            <label for="floatingPassword" >Mot de passe</label>
             <input type="password" class="form-control" id="floatingPassword" placeholder="Mot de passe" name="passUser">
-            <label for="floatingPassword">Mot de passe</label>
-        </div>
 
-        <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPasswordconf" placeholder="Confirmation MDP" name="passUserConf">
+        </div>
+        <div class="form-floating mt-1">
             <label for="floatingPasswordconf">Confirmation du MDP</label>
+            <input type="password" class="form-control" id="floatingPasswordconf" placeholder="Confirmation MDP" name="passUserConf">
+
         </div>
 
-        <button class="w-100 btn btn-lg btn-primary" type="submit">S'inscrire</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2021</p>
+        <button class="w-100 btn btn-lg btn-primary mt-4" type="submit">Connexion</button>
+        <p class="mt-5 mb-0 text-muted">&copy; 2021</p>
     </form>
 </main>
+
 
 
 
