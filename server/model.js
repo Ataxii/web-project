@@ -2,9 +2,9 @@
 /* Module de recherche dans une base de recettes de cuisine */
 const Sqlite = require('better-sqlite3');
 
-let db = new Sqlite('main.db');
+let db = new Sqlite('../sqLite/main.db');
 
-let idUser = 0;
+let idUser = 3;
 
 
 exports.register = (nameUser, passUser) => {
@@ -42,13 +42,14 @@ exports.lenghtPassword = ( passUser) => {
     }
 }
 // fonction qui récup tout les utilisateurs (id, photo, pseudo) tableau de tableau+ recuperer les infos d'un utilisateur avec son id , + api centre d'interet (json -->parse --> require('fs')
-exports.allUserinfo = () => {
+exports.allUserInfo = () => {
     let array = [];
-    let ids = db.prepare('SELECT id FROM userLogin');
-    for(let id in ids){
-        let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(id);
-        let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(id);
-        let info = { id: id, nameUser: pseudo , photo_de_profil : photo };
+    var ids = db.prepare('SELECT id FROM userProfil').all();
+    for(var element of ids){
+        let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.id);
+        let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.id);
+        let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.id);
+        let info = { id: element.id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
         array.push(info);
     }
     return array;

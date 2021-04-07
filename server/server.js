@@ -9,6 +9,7 @@ var app = express();
 const cookieSession = require('cookie-session');
 app.use(cookieSession({
     secret: 'mot-de-passe-du-cookie',
+    maxAge : 1000 * 60 * 20  //milli, sec, minutes
 }));
 
 // parse form arguments in POST requests
@@ -28,11 +29,14 @@ function authenticated(req, res, next) {
     next();
 }
 
-/**** Routes pour l'utilisateur ****/
+/**** ============  Routes pour l'utilisateur  ============ ****/
 
+/** page d'acceuil **/
 app.get('/', (req, res) => {
     res.render('main');
 });
+
+/** ======================== page d'inscription  ======================== **/
 
 app.get('/register', (req, res) => {
     res.render('register');
@@ -50,6 +54,9 @@ app.post('/register', (req, res) => {
     res.redirect('/register');
 });
 
+
+/**  ======================== page de connection ========================  **/
+
 app.get('/login', (req, res) => {
     res.render('login');
 });
@@ -57,29 +64,53 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
     let login = model.login(req.body.nameUser, req.body.passUser); // login() return id
     if (login < 0) {
-        res.redirect('/login');
+        var msg = "nom d'utilisateur ou mot de passe incerrect"
+        res.render('login', {msg: msg});
     } else {
         req.session.user = login;
         res.redirect('/profil');
     }
 });
 
+
+/** ======================== déconnexion ======================== **/
+
 app.get('/logout', (req, res) => {
     req.session = null;
     res.redirect('/');
 });
 
+
+/**======================== page de recherche d'autre utilisateur ========================**/
+
+app.get('/research', is_authenticated, (req,res) => {
+    let info = model.allUserInfo(req.session.user);
+    res.render('research', {ressources : info});
+})
+
+app.post('/research', (req, res) => {
+    res.redirect('/research');
+});
+
+
+/**======================== profil de l'utilisateur connecté ========================**/
+
 app.get('/profil', is_authenticated, (req,res) => {
     let info = model.userInfo(req.session.user);
-    res.render('profil', info);
+    res.render('profil',  info);
 })
 
 app.post('/profil', (req, res) => {
     res.redirect('/profil');
 });
 
+/**======================== profil d'un utilisateur recherché ========================**/
+
+
+
 function is_authenticated(req, res, next) {
 
+    console.log(req.session.user);
     if (req.session.user !== undefined) {
         return next();
     }
