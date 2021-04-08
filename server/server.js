@@ -96,8 +96,9 @@ app.post('/research', (req, res) => {
 /**======================== profil de l'utilisateur connecté ========================**/
 
 app.get('/profil', is_authenticated, (req,res) => {
-    let info = model.userInfo(req.session.user);
-    res.render('profil',  info);
+    let infoUser = model.userInfo(req.session.user);
+    let infoFriends = model.allFriends(req.session.user);
+    res.render('profil', {infoUser :infoUser, infoFriends : infoFriends});
 })
 
 app.post('/profil', (req, res) => {
@@ -106,16 +107,29 @@ app.post('/profil', (req, res) => {
 
 /**======================== profil d'un utilisateur recherché ========================**/
 app.get('/profilUser/:id', is_authenticated, (req,res) => {
-
     let info = model.userInfo(req.params.id);
     res.render('profilUser',  info);
 })
+
+app.get('/addfriends/:id', is_authenticated, (req, res) => {
+    if(model.request(req.session.user, req.params.id)){
+        res.redirect('/research');
+    }//TODO faire la gestion de l'erreur
+    else res.redirect('/research');
+
+});
+
+app.get('/delfriends/:id', is_authenticated, (req, res) => {
+    model.delete(req.session.user, req.params.id)
+    res.redirect('/profil');
+    //TODO faire la gestion de l'erreur
+
+});
 
 
 
 function is_authenticated(req, res, next) {
 
-    console.log(req.session.user);
     if (req.session.user !== undefined) {
         return next();
     }
