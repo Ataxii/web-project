@@ -65,4 +65,10 @@ exports.userInfo = (id) => {
     return info;
 }
 
-// fonction create/ set avec un id et tout les infos
+// fonction create/ set avec un id et tout les infos,
+exports.modification = (id, photo, biographie, etudes, contact )=> {
+    var insertLogin = db.prepare('INSERT INTO userProfil VALUES (@id, @photo_de_profil, @biographie, @etudes, @contact)');
+    var value = {id : id, photo_de_profil : photo, biographie: biographie, etudes : etudes, contact : contact};
+    insertLogin.run(value);
+}
+

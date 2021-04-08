@@ -105,6 +105,11 @@ app.post('/profil', (req, res) => {
 });
 
 /**======================== profil d'un utilisateur recherché ========================**/
+app.get('/profilUser/:id', is_authenticated, (req,res) => {
+
+    let info = model.userInfo(req.params.id);
+    res.render('profilUser',  info);
+})
 
 
 
