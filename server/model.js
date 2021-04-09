@@ -42,19 +42,27 @@ exports.lenghtPassword = ( passUser) => {
     }
 }
 // fonction qui récup tout les utilisateurs (id, photo, pseudo) tableau de tableau+ recuperer les infos d'un utilisateur avec son id , + api centre d'interet (json -->parse --> require('fs')
-exports.allUserInfo = () => {
-    //TODO mettre en paramettre l'id de l'utilisateru courant pour pas qu'il puisse s'ajouter en ami ( modifier la fonction)
+exports.allUserInfo = (id) => {
+
     let array = [];
     var ids = db.prepare('SELECT id FROM userProfil').all();
     for(var element of ids){
-        let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.id);
-        let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.id);
-        let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.id);
-        let info = { id: element.id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
-        array.push(info);
+        if(id !== element.id && !this.isFriends(id, element.id)){
+            let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.id);
+            let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.id);
+            let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.id);
+            let info = { id: element.id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
+            array.push(info);
+        }
     }
     return array;
 }
+
+exports.allUserInfoWithResearch = (id, research) => { //l'argument research est une string du nom
+    //TODO faire la fonction de recherche avec le fait de pouvoir ce tromper sur le nom et avoir quand meme des resultats
+}
+
+
 //
 exports.userInfo = (id) => {
     let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(id);
@@ -74,10 +82,10 @@ exports.modification = (id, photo, biographie, etudes, contact )=> {
 }
 
 /*** partie friends***/
-//TODO faire les tests pour voir si ca marche
+
 //concidere comme requete quand ils sont ami que dans un sens, concidere ami quand ils sont ami dans les 2 sens
 exports.request = (id, idOtherUser )=> {
-    //TODO corriger le probleme avec le is friends ou is request parce que pour l'instant si juste une personne ajoute l'autre, les 2 sont amis
+
     if (this.isRequest(id, idOtherUser)){
         return false;
     }
@@ -88,31 +96,29 @@ exports.request = (id, idOtherUser )=> {
 }
 
 exports.isFriends = (id, idOtherUser )=> {
-    let testId = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(idOtherUser, id);
-    let testOtherId = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(id, idOtherUser);
-    console.log(testId, testOtherId);
-    return testId !== undefined && testOtherId !== undefined;
+    console.log(this.isRequest(idOtherUser, id), this.isRequest(id, idOtherUser));
+    return this.isRequest(idOtherUser, id) && this.isRequest(id, idOtherUser);
 }
 
 exports.isRequest = (id, idOtherUser )=> {
-    let testOtherId = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(id, idOtherUser);
+    let testOtherId = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(idOtherUser, id);
     return testOtherId !== undefined;
 }
 
 exports.allFriends = (id) => {
     let array = [];
     var ids = db.prepare('SELECT friends FROM userFriends where id = ?').all(id);
-    console.log(ids);
     if(ids.size === 0){
         return array;
     }
     for(var element of ids){
-        console.log(element.friends);
-        let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.friends);
-        let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.friends);
-        let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.friends);
-        let info = { id: element.friends, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
-        array.push(info);
+        if(this.isFriends(id, element.friends)){
+            let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.friends);
+            let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.friends);
+            let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.friends);
+            let info = { id: element.friends, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
+            array.push(info);
+        }
     }
     return array;
 }

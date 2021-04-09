@@ -133,7 +133,7 @@ function is_authenticated(req, res, next) {
     if (req.session.user !== undefined) {
         return next();
     }
-    return res.status(401).send('Authentication required');
+    return res.status(401).send('Authentication required  <a class="btn btn-primary" href="/login" role="button">Connexion</a>');
 }
 
 app.listen(3000, () => console.log('listening on http://localhost:3000'));
