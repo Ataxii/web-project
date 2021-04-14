@@ -46,7 +46,7 @@ exports.allUserInfo = (id) => {
     let array = [];
     var ids = db.prepare('SELECT id FROM userProfil').all();
     for(var element of ids){
-        if(id !== element.id && !this.isFriends(id, element.id)){
+        if(id !== element.id && !this.isRequest(element.id, id)&& !this.isRequest(id, element.id) && !this.isFriends(id, element.id)){
             let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.id);
             let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.id);
             let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.id);
@@ -95,13 +95,15 @@ exports.request = (id, idOtherUser )=> {
 }
 
 exports.isFriends = (id, idOtherUser )=> {
-    console.log(this.isRequest(idOtherUser, id), this.isRequest(id, idOtherUser));
-    return this.isRequest(idOtherUser, id) && this.isRequest(id, idOtherUser);
+    let testOtherId = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(idOtherUser, id);
+    let testOtherId2 = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(id, idOtherUser);
+    return testOtherId !== undefined && testOtherId2 !== undefined;
 }
 
-exports.isRequest = (id, idOtherUser )=> {
-    let testOtherId = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(idOtherUser, id);
-    return testOtherId !== undefined;
+exports.isRequest = (idUse, idOtherUser )=> {
+    let testOtherId = db.prepare('SELECT id FROM userFriends WHERE  id = ? and friends = ?').get(idUse, idOtherUser);
+    let testOtherId2 = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(idUse, idOtherUser);
+    return testOtherId !== undefined && testOtherId2 === undefined;
 }
 
 exports.allFriends = (id) => {
@@ -116,6 +118,28 @@ exports.allFriends = (id) => {
             let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.friends);
             let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.friends);
             let info = { id: element.friends, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
+            array.push(info);
+        }
+    }
+    return array;
+}
+
+exports.allRequestIn = (id) => {
+    let array = [];
+    var ids = db.prepare('SELECT id FROM userFriends where friends = ?').all(id);
+    console.log("les id " )
+
+    if(ids.size === 0){
+        return array;
+    }
+    for(var element of ids){
+        console.log(element)
+        if(!this.isFriends(element.id, id)){
+
+            let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.id);
+            let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.id);
+            let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.id);
+            let info = { id: element.id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
             array.push(info);
         }
     }

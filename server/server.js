@@ -92,9 +92,9 @@ app.get('/logout', (req, res) => {
 /**======================== page de recherche d'autre utilisateur ========================**/
 
 app.get('/research', is_authenticated, (req,res) => {
+    let infoUser = model.userInfo(req.session.user);
     let info = model.allUserInfo(req.session.user);
-    let UserInfo = model.userInfo(req.session.user)
-    res.render('research', {ressources : info, infoUser : UserInfo});
+    res.render('research', {ressources : info, infoUser :infoUser });
 })
 
 app.post('/research', (req, res) => {
@@ -107,7 +107,9 @@ app.post('/research', (req, res) => {
 app.get('/profil', is_authenticated, (req,res) => {
     let infoUser = model.userInfo(req.session.user);
     let infoFriends = model.allFriends(req.session.user);
-    res.render('profil', {infoUser :infoUser, infoFriends : infoFriends});
+    let infoRequest = model.allRequestIn(req.session.user);
+    console.log(infoRequest);
+    res.render('profil', {infoUser :infoUser, infoFriends : infoFriends, infoRequest: infoRequest});
 })
 
 app.post('/profil', (req, res) => {
@@ -116,8 +118,9 @@ app.post('/profil', (req, res) => {
 
 /**======================== profil d'un utilisateur recherché ========================**/
 app.get('/profilUser/:id', is_authenticated, (req,res) => {
+    let infoUser = model.userInfo(req.session.user);
     let info = model.userInfo(req.params.id);
-    res.render('profilUser',  info);
+    res.render('profilUser',  {info: info, infoUser : infoUser});
 })
 
 app.get('/addfriends/:id', is_authenticated, (req, res) => {
