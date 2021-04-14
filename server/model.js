@@ -21,12 +21,12 @@ exports.register = (nameUser, passUser) => {
 exports.login = (nameUser, passUser) => {
     let idlog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ? AND passUser = ?').get(nameUser, passUser);
     if(idlog === undefined){
-        return -1;
+        return 0;
     }
 
     if (idlog.id !== undefined) {
         return idlog.id;
-    } else return -1;
+    } else return 0;
 }
 
 exports.isRegister = (nameUser) => {
@@ -34,7 +34,6 @@ exports.isRegister = (nameUser) => {
     return pseudolog !== undefined;
 
 }
-
 
 exports.lenghtPassword = ( passUser) => {
     if (passUser.length < 8){

@@ -1,7 +1,9 @@
 {{> header}}
 <!profil de n'importe qu'elle utilisateur, doit etre sensiblement pareil que profil.html>
 <body>
-
+{{#admin}}
+<a class="btn btn-primary" href="/modifications/{{id}}" role="button">modifier</a>
+{{/admin}}
 {{nameUser}}
 </body>
 </html>

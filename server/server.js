@@ -21,6 +21,14 @@ app.set('view engine', 'html');
 app.set('views', '../views');
 
 app.use(authenticated);
+app.use(admin);
+
+function admin(req, res, next) {
+    if (req.session.user < 0){
+        res.locals.admin = true;
+    }
+    next();
+}
 
 function authenticated(req, res, next) {
     if (req.session.user !== undefined) {
@@ -63,7 +71,7 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     let login = model.login(req.body.nameUser, req.body.passUser); // login() return id
-    if (login < 0) {
+    if (login === 0) {
         var msg = "nom d'utilisateur ou mot de passe incerrect"
         res.render('login', {msg: msg});
     } else {
@@ -85,7 +93,8 @@ app.get('/logout', (req, res) => {
 
 app.get('/research', is_authenticated, (req,res) => {
     let info = model.allUserInfo(req.session.user);
-    res.render('research', {ressources : info});
+    let UserInfo = model.userInfo(req.session.user)
+    res.render('research', {ressources : info, infoUser : UserInfo});
 })
 
 app.post('/research', (req, res) => {
@@ -126,6 +135,18 @@ app.get('/delfriends/:id', is_authenticated, (req, res) => {
 
 });
 
+/**======================== modification d'un profil ========================**/
+app.get('/modifications/:id', is_authenticated, (req, res) => {
+    if (req.params.id === req.session.user || res.locals.admin < 0){
+        let userInfo = model.userInfo(req.params.id);
+        res.render('modification', userInfo );
+    }
+});
+
+app.post('/modifications', (req, res) => {
+    model.modification(req);
+    res.redirect('/profil');
+});
 
 
 function is_authenticated(req, res, next) {

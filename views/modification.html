@@ -1,0 +1,18 @@
+{{> header}}
+<form action="/modifications/{{id}}" method="post">
+    <div class="row row-cols-1 row-cols-sm-2">
+        <div class="col">
+            <h1> Modification du profil </h1>
+            <p>Titre : <input class="form-control" type="text" name="nameUser">{{nameUser}}</p>
+            <p>Description : <br> <textarea class="form-control" name="photo_de_profil">{{photo_de_profil}}</textarea></p>
+            <p>Durée : <input class="form-control" type="text" name="biographie">{{biographie}}</p>
+            <p>Image : <input class="form-control" type="text" name="etudes">{{etudes}}</p>
+            <p>Image : <input class="form-control" type="text" name="contact">{{contact}}</p>
+            <div class="form-inline">
+                <input class="form-control btn btn-primary mr-2" type="submit" value="Modifier">
+                <a class="form-control btn btn-primary" href="/research">Annuler</a>
+            </div>
+        </div>
+    </div>
+</form>
+{{> footer}}

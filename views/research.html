@@ -1,5 +1,5 @@
 {{> header}}
-<body>
+<body class="container-sm">
 
 <a class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
     <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
@@ -7,11 +7,12 @@
 </a>
 <div class="list-group list-group-flush border-bottom scrollarea">
     {{#ressources}}
-    <a href="/profilUser/{{id}}" class="list-group-item list-group-item-action py-3 lh-tight">
+    <a href="/profilUser/{{userInfo.id}}" class="list-group-item list-group-item-action py-3 lh-tight">
         <div class="d-flex w-100 align-items-center justify-content-between">
-            <strong class="mb-1">{{nameUser}}</strong>
-            <a class="btn btn-primary" href="/addfriends/{{id}}" role="button">Ajouter</a>
             <small class="text-muted"> <img src="{{photo_de_profil}}" style="height: 70px"></small>
+            <strong class="mb-1">{{nameUser}}</strong>
+            <a class="btn btn-primary" href="/addfriends/{{userInfo.id}}" role="button">Ajouter</a>
+
         </div>
         <div class="col-10 mb-1 small">{{biographie}}</div>
     </a>

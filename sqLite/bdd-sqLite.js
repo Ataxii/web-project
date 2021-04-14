@@ -1,5 +1,5 @@
 var sqlite = require('better-sqlite3');
-var db = new sqlite('./main.db');
+var db = new sqlite('main.db');
 
 db.prepare('DROP TABLE IF EXISTS userLogin').run();
 db.prepare('DROP TABLE IF EXISTS userProfil').run();
@@ -19,11 +19,16 @@ var value = {id : 1, photo_de_profil : "https://www.jeancoutu.com/globalassets/r
 var value1 = {id : 1, nameUser : "jean", passUser : "123456789"};
 var value2 = {id : 2, photo_de_profil : "https://www.jeancoutu.com/globalassets/revamp/photo/conseils-photo/20160302-01-reseaux-sociaux-profil/photo-profil_301783868.jpg", biographie: "Lucie, 22 ans, etudiante L2 paster, je suis là pour le fun", etudes : "portail paster", contact : "email : fakeMailDeLucie@gmail.com"};
 var value3 = {id : 2, nameUser : "lucie", passUser : "123456789"};
+var value4 = {id : -4, photo_de_profil : "https://www.ulyces.co/wp-content/uploads/2021/02/9267284e7733f4bec00d2e114d3f3ba1_XL.jpg", biographie: "je suis l'admin", etudes : "root me", contact : "email : fakeMailAdmin@gmail.com"};
+var value5 = {id : -4, nameUser : "admin1", passUser : "123456789"};
+
 
 
 insertLogin.run(value);
 insertProfil.run(value1);
 insertLogin.run(value2);
 insertProfil.run(value3);
+insertLogin.run(value4);
+insertProfil.run(value5);
 
 
