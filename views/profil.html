@@ -1,41 +1,119 @@
 {{> header}}
 
 <body>
-<H1>{{infoUser.nameUser}}</H1>
 
-<a class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-    <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
-    <span class="fs-5 fw-semibold">Votre liste d'amis</span>
-</a>
-<div class="list-group list-group-flush border-bottom scrollarea">
-    {{#infoFriends}}
-    <a href="/profilUser/{{id}}" class="list-group-item list-group-item-action py-3 lh-tight">
-        <div class="d-flex w-100 align-items-center justify-content-between">
-            <strong class="mb-1">{{nameUser}}</strong>
-            <a class="btn btn-primary" href="/delfriends/{{id}}" role="button">Supprimer</a>
-            <small class="text-muted"> <img src="{{photo_de_profil}}" style="height: 70px"></small>
+<div class="row py-5 px-4">
+    <div class="col-md-5 mx-auto">
+        <!-- Profile widget -->
+        <div class="bg-white shadow rounded overflow-hidden">
+            <div class="px-4 pt-0 pb-4 cover">
+                <div class="media align-items-end profile-head">
+                    <div class="profile mr-3"><img src="{{infoUser.photo_de_profil}}" alt="..." width="130"
+                                                   class="rounded mb-2 img-thumbnail"><a href="/modifications"
+                                                                                         class="btn btn-outline-dark btn-sm btn-block">Modifier</a></div>
+                    <div class="media-body mb-5 ">
+                        <h4 class="mt-0 mb-0">{{infoUser.nameUser}}</h4>
+                        <p class="small mb-4"><i class="fas fa-map-marker-alt mr-2"></i></p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-light p-4 d-flex justify-content-end text-center">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block"></h5><small class="text-muted"> <i
+                            class="fas fa-image mr-1"></i></small>
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block"></h5><small class="text-muted"> <i
+                            class="fas fa-user mr-1"></i></small>
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block"></h5><small class="text-muted"> <i
+                            class="fas fa-user mr-1"></i></small>
+                    </li>
+                </ul>
+            </div>
+            <div class="px-4 py-3">
+                <h5 class="mb-0">A propos</h5>
+                <div class="p-4 rounded shadow-sm bg-light">
+                    <p class="font-italic mb-0">{{infoUser.biographie}}</p>
+                    <p class="font-italic mb-0">{{infoUser.etudes}}</p>
+                    <p class="font-italic mb-0">{{infoUser.contact}}</p>
+                </div>
+            </div>
+            <div class="py-4 px-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">Amis</h5>
+                </div>
+
+                <a class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
+                    <svg class="bi me-2" width="30" height="24">
+                        <use xlink:href="#bootstrap"></use>
+                    </svg>
+                    <span class="fs-5 fw-semibold">Votre liste d'amis</span>
+                </a>
+                <div class="list-group list-group-flush border-bottom scrollarea">
+
+                    {{#infoFriends}}
+
+
+                    <div class="container mt-5 d-flex justify-content-center">
+                        <div class="card p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="155"></div>
+                                <div class="ml-3 w-100">
+                                    <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
+                                    <div class="button mt-2 d-flex flex-row align-items-center">
+                                        <a href="/profilUser/{{id}}"
+                                           class="btn btn-sm btn-outline-primary w-100">Profil</a>
+                                        <a href="/delfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2">
+                                            Supprimer
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                    {{/infoFriends}}
+                </div>
+
+
+                <a class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
+                    <svg class="bi me-2" width="30" height="24">
+                        <use xlink:href="#bootstrap"></use>
+                    </svg>
+                    <span class="fs-5 fw-semibold">Votre liste de requête</span>
+                </a>
+
+                <div class="list-group list-group-flush border-bottom scrollarea">
+
+                    {{#infoRequest}}
+
+
+                    <div class="container mt-5 d-flex justify-content-center">
+                        <div class="card p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="155"></div>
+                                <div class="ml-3 w-100">
+                                    <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
+                                    <div class="button mt-2 d-flex flex-row align-items-center">
+                                        <a href="/profilUser/{{id}}"
+                                           class="btn btn-sm btn-outline-primary w-100">Profil</a>
+                                        <a href="/addfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2">
+                                            Ajouter
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/infoRequest}}
+                </div>
+            </div>
         </div>
-        <div class="col-10 mb-1 small">{{biographie}}</div>
-    </a>
-    {{/infoFriends}}
+    </div>
 </div>
-
-
-<a class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-    <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
-    <span class="fs-5 fw-semibold">Votre liste de requête</span>
-</a>
-<div class="list-group list-group-flush border-bottom scrollarea">
-    {{#infoRequest}}
-    <a href="/profilUser/{{id}}" class="list-group-item list-group-item-action py-3 lh-tight">
-        <div class="d-flex w-100 align-items-center justify-content-between">
-            <strong class="mb-1">{{nameUser}}</strong>
-            <a class="btn btn-primary" href="/addfriends/{{id}}" role="button">Ajouter</a>
-            <small class="text-muted"> <img src="{{photo_de_profil}}" style="height: 70px"></small>
-        </div>
-        <div class="col-10 mb-1 small">{{biographie}}</div>
-    </a>
-    {{/infoRequest}}
 </div>
 
 </body>

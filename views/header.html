@@ -3,31 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.82.0">
     <title>School Link</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/headers/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- Vendor CSS-->
+    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link href="vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
 
-    <!-- Bootstrap core CSS -->
-    <link href="/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
-
-    <meta name="theme-color" content="#7952b3">
-
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-    <!-- Custom styles for this template -->
-    <link href="headers.css" rel="stylesheet">
 </head>
 <body>
 
 
-<header class="p-3 mb-3 border-bottom">
+<header class="p-3 mb-3 border-bottom text-center container-fluid">
     <div class="container mx-0">
 
         <div class="row mt-1">
@@ -47,35 +39,27 @@
             </div>
 
             <div class="col-4">
-                <form class=" form-inline d-inline-flex ">
-                    <input type="search" class="form-control" placeholder="Search...">
-                    <button type="button" class="btn btn-light border border-dark d-inline ml-1">Search</button>
+                <form action="/research" method="post" class=" form-inline d-inline-flex ">
+                    <label>
+                        <input id="searchs" name="searchs" type="search" class="form-control"
+                               placeholder="Nom d'utilisateur">
+                    </label>
+                    <button type="submit" class="btn btn-light border border-dark d-inline ml-1">Rechercher</button>
                 </form>
 
 
             </div>
-            <div class="col-1">
-                <div class="d-inline-flex dropdown text-end col-md-2 col-1">
-                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src={{infoUser.photo_de_profil}} alt="mdo" width="32" height="32" class="rounded-circle pr-0">
-                    </a>
-                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                        <li><a class="dropdown-item" href="#">New project...</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
-                    </ul>
 
-                </div>
+            <div class="dropdown col-1">
+                <a class=" dropdown-toggle" type="button" data-toggle="dropdown">
+                    <img src={{infoUser.photo_de_profil}} alt="mdo" width="32" height="32" class="rounded-circle pr-0"></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/profil">Profil</a></li>
+                    <li><a href="#">Chat</a></li>
+                    <li><a href="/logout">Déconnexion</a></li>
+                </ul>
             </div>
-
         </div>
-
-
     </div>
     </div>
 </header>

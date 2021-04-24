@@ -4,14 +4,17 @@ var db = new sqlite('main.db');
 db.prepare('DROP TABLE IF EXISTS userLogin').run();
 db.prepare('DROP TABLE IF EXISTS userProfil').run();
 db.prepare('DROP TABLE IF EXISTS userFriends').run();
+db.prepare('DROP TABLE IF EXISTS chat').run();
 
 db.prepare('CREATE TABLE userLogin (id INTEGER PRIMARY KEY, nameUser TEXT, passUser TEXT)').run();
 db.prepare('CREATE TABLE userProfil (id INTEGER PRIMARY KEY, photo_de_profil TEXT, biographie TEXT, etudes TEXT, contact TEXT)').run();
 db.prepare('CREATE TABLE userFriends (id INTEGER, friends INTEGER)').run();
+db.prepare('CREATE TABLE chat (id1 INTEGER, id2 INTEGER, message TEXT, date datetime)').run(); //id1 et id2 sont juste la pour stocker les id des utilisateurs, message proviens de l'utilisateur 1 sur l'utilisateur 2
 
 
 var insertLogin = db.prepare('INSERT INTO userProfil VALUES (@id, @photo_de_profil, @biographie, @etudes, @contact)');
 var insertProfil = db.prepare('INSERT INTO userLogin VALUES (@id, @nameUser, @passUser)');
+
 
 
 

@@ -1,18 +1,22 @@
 "use strict"
-/* Serveur pour le site de recettes */
-var express = require('express');
+const app = require('express')();
 var mustache = require('mustache-express');
+const serveur = require('http').createServer(app);
+var io = require('socket.io')(serveur);
+
 
 var model = require('./model');
-var app = express();
 
 const cookieSession = require('cookie-session');
-app.use(cookieSession({
+const session = cookieSession({
     secret: 'mot-de-passe-du-cookie',
     maxAge : 1000 * 60 * 20  //milli, sec, minutes
-}));
+    //todo faire en sorte que le cookie disparaisse quand on ferme toutes les pages
+})
+app.use(session);
 
-// parse form arguments in POST requests
+io.use((socket, next) => {session(socket.request, {}, next)});//transfert de cookie session à socket.io
+
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -42,6 +46,7 @@ function authenticated(req, res, next) {
 /** page d'acceuil **/
 app.get('/', (req, res) => {
     res.render('main');
+
 });
 
 /** ======================== page d'inscription  ======================== **/
@@ -98,8 +103,17 @@ app.get('/research', is_authenticated, (req,res) => {
 })
 
 app.post('/research', (req, res) => {
-    res.redirect('/research');
+    res.redirect('/research/'+ req.body.searchs);
 });
+
+
+
+app.get('/research/:search', is_authenticated, (req,res) => {
+    let infoUser = model.userInfo(req.session.user);
+    let info = model.allUserInfoWithResearch(req.session.user, req.params.search);
+    res.render('research', {ressources : info, infoUser :infoUser });
+})
+
 
 
 /**======================== profil de l'utilisateur connecté ========================**/
@@ -108,7 +122,6 @@ app.get('/profil', is_authenticated, (req,res) => {
     let infoUser = model.userInfo(req.session.user);
     let infoFriends = model.allFriends(req.session.user);
     let infoRequest = model.allRequestIn(req.session.user);
-    console.log(infoRequest);
     res.render('profil', {infoUser :infoUser, infoFriends : infoFriends, infoRequest: infoRequest});
 })
 
@@ -125,9 +138,9 @@ app.get('/profilUser/:id', is_authenticated, (req,res) => {
 
 app.get('/addfriends/:id', is_authenticated, (req, res) => {
     if(model.request(req.session.user, req.params.id)){
-        res.redirect('/research');
+        res.redirect('/profil');
     }//TODO faire la gestion de l'erreur
-    else res.redirect('/research');
+    else res.redirect('/profil');
 
 });
 
@@ -139,15 +152,33 @@ app.get('/delfriends/:id', is_authenticated, (req, res) => {
 });
 
 /**======================== modification d'un profil ========================**/
+
+//pour l'utilisateur connecté
+app.get('/modifications', is_authenticated, (req, res) => {
+    let infoUser = model.userInfo(req.session.user);
+    res.render('modification', {info: infoUser, infoUser : infoUser} );
+
+});
+
+//pour les admins pour les autres utilisateurs
 app.get('/modifications/:id', is_authenticated, (req, res) => {
-    if (req.params.id === req.session.user || res.locals.admin < 0){
-        let userInfo = model.userInfo(req.params.id);
-        res.render('modification', userInfo );
+    if (res.locals.admin){
+        let info = model.userInfo(req.params.id);
+        let infoUser = model.userInfo(req.session.user);
+        res.render('modification', {info: info, infoUser : infoUser} );
     }
+    else
+        res.redirect('/profil');
 });
 
 app.post('/modifications', (req, res) => {
-    model.modification(req);
+    var allInfo = {id : req.body.id, photo_de_profil : req.body.photo_de_profil, biographie: req.body.biographie, etudes : req.body.etudes, contact : req.body.contact}
+    var id = req.body.id;
+    console.log(id)
+    if(req.body.id === undefined){
+        id = req.session.user
+    }
+    model.modification(id, req.body.photo_de_profil, req.body.biographie, req.body.etudes, req.body.contact);
     res.redirect('/profil');
 });
 
@@ -160,4 +191,39 @@ function is_authenticated(req, res, next) {
     return res.status(401).send('Authentication required  <a class="btn btn-primary" href="/login" role="button">Connexion</a>');
 }
 
-app.listen(3000, () => console.log('listening on http://localhost:3000'));
+
+
+serveur.listen(3000, () => console.log('listening on http://localhost:3000'))
+
+
+
+//PARTIE DE CHAT
+
+
+
+io.on('connection', (socket) => {
+    //sauvegarder les id de se qui se connect
+    console.log("utilisateur connecté : " + socket.request.session.user);
+
+    socket.on('chat message', (msg) => {//ecoute du message 
+        console.log(msg);
+        io.emit('chat message', msg);//ici on renvoie le message a la page html, c'est ici qu'il faut gerer la fait que ce soit un utilisateur ou l'autre
+    })
+});
+
+app.get('/chat/:id1/:id2', (req, res) => {//id1 et id2 doivent etre dans l'ordre croissant pour que la session soit unique
+    var conv = model.getConversation(req.params.id1, req.params.id2);
+    //faire une popup à l'utilisateur courant quand l'autre est connecté
+    //faire le emit avec io
+    if (req.session.user === req.params.id1 ||req.session.user === req.params.id2 ){
+        res.render('chat', req.session.id);
+    }
+    else{
+        res.redirect('/profil');
+    }
+});
+
+
+app.get('/chat', (req, res) => {
+    res.render('chat', req.session.id);
+});

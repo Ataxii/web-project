@@ -5,22 +5,31 @@
     <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
     <span class="fs-5 fw-semibold">Personnes trouvées</span>
 </a>
-<div class="list-group list-group-flush border-bottom scrollarea">
+<div class="list-group list-group-flush scrollarea">
+
+
     {{#ressources}}
-    <a href="/profilUser/{{id}}" class="list-group-item list-group-item-action py-3 lh-tight">
-        <div class="d-flex w-100 align-items-center justify-content-between">
-            <small class="text-muted"> <img src="{{photo_de_profil}}" style="height: 70px"></small>
-            <strong class="mb-1">{{nameUser}}</strong>
-            <a class="btn btn-primary" href="/addfriends/{{id}}" role="button">Ajouter</a>
+    <div class="container mt-5 justify-content-center">
+        <div class="card p-3">
+            <div class="d-flex align-items-center">
+                <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="155"></div>
+                <div class="ml-3 w-100">
+                    <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span class="mx-4">{{biographie}}</span>
+                </div>
+                    <div class="button mt-4 d-flex flex-row d-inline-flex align-items-center">
+                        <a href="/profilUser/{{id}}"
+                           class="btn btn-sm btn-outline-primary w-100">Profil</a>
+                        <a href="/addfriends/{{id}}" class="btn d-inline-flex btn-sm btn-primary w-100 ml-2">
+                            Ajouter
+                        </a>
+                    </div>
 
+            </div>
         </div>
-        <div class="col-10 mb-1 small">{{biographie}}</div>
-    </a>
+    </div>
     {{/ressources}}
+
 </div>
-
-
-
 
 </body>
 {{> footer}}

@@ -58,8 +58,23 @@ exports.allUserInfo = (id) => {
 }
 
 exports.allUserInfoWithResearch = (id, research) => { //l'argument research est une string du nom
-    //TODO faire la fonction de recherche avec le fait de pouvoir ce tromper sur le nom et avoir quand meme des resultats
+    //TODO selectioner dabbord l'id dans la prelier table pour ensuite recuperer les infos, la recupertaiton des id se fait avec la recherche mais pas le reste
+    //recuperation des id
+    research = "%" + research + "%"
+    let array = [];
+    var ids = db.prepare('SELECT id FROM userLogin WHERE nameUser LIKE ?').all(research);
+    for(var element of ids){
+        if(id !== element.id && !this.isRequest(element.id, id)&& !this.isRequest(id, element.id) && !this.isFriends(id, element.id)){
+            let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.id);
+            let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.id);
+            let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.id);
+            let info = { id: element.id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
+            array.push(info);
+        }
+    }
+    return array;
 }
+
 
 
 //
@@ -75,9 +90,11 @@ exports.userInfo = (id) => {
 
 // fonction create/ set avec un id et tout les infos,
 exports.modification = (id, photo, biographie, etudes, contact )=> {
-    var insertLogin = db.prepare('UPDATE userProfil SET (@photo_de_profil, @biographie, @etudes, @contact) WHERE id = ?');
-    var value = {photo_de_profil : photo, biographie: biographie, etudes : etudes, contact : contact};
-    insertLogin.run(value, id);
+
+    var deleting = db.prepare('DELETE FROM userProfil WHERE id = ' + id).run();
+    var insertLogin = db.prepare('INSERT INTO userProfil VALUES (@id, @photo_de_profil, @biographie, @etudes, @contact)');
+    var value = {id : id, photo_de_profil : photo, biographie: biographie, etudes : etudes, contact : contact};
+    insertLogin.run(value);
 }
 
 /*** partie friends***/
@@ -127,13 +144,11 @@ exports.allFriends = (id) => {
 exports.allRequestIn = (id) => {
     let array = [];
     var ids = db.prepare('SELECT id FROM userFriends where friends = ?').all(id);
-    console.log("les id " )
 
     if(ids.size === 0){
         return array;
     }
     for(var element of ids){
-        console.log(element)
         if(!this.isFriends(element.id, id)){
 
             let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.id);
@@ -146,6 +161,21 @@ exports.allRequestIn = (id) => {
     return array;
 }
 
+
 exports.delete = (id, idOtherUser )=> {
     db.prepare('DELETE FROM userFriends WHERE friends = ? and id = ?').run(idOtherUser, id);
+}
+
+////CHAT///////
+
+exports.addConversation = (id1, id2, text )=> {// envoie d'un message de id1 vers id2
+    
+    db.prepare('INSERT INTO chat VALUES(@id1, @id2, @message, NOW()').run({id1 : id1, id2 : id2, message : text});
+
+}
+
+exports.getConversation = (id1, id2)=> {
+    //todo recuperer une conversation
+    let conversation = db.prepare('SELECT message FROM chat WHERE id1 = ? AND id2 = ? ORDER BY date').get(id1, id2);
+    return conversation
 }
