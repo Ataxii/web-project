@@ -10,7 +10,7 @@ var model = require('./model');
 const cookieSession = require('cookie-session');
 const session = cookieSession({
     secret: 'mot-de-passe-du-cookie',
-    maxAge : 1000 * 60 * 20  //milli, sec, minutes
+    //maxAge : 1000 * 60 * 20  //milli, sec, minutes
     //todo faire en sorte que le cookie disparaisse quand on ferme toutes les pages
 })
 app.use(session);
@@ -211,19 +211,25 @@ io.on('connection', (socket) => {
     })
 });
 
-app.get('/chat/:id1/:id2', (req, res) => {//id1 et id2 doivent etre dans l'ordre croissant pour que la session soit unique
-    var conv = model.getConversation(req.params.id1, req.params.id2);
-    //faire une popup à l'utilisateur courant quand l'autre est connecté
-    //faire le emit avec io
-    if (req.session.user === req.params.id1 ||req.session.user === req.params.id2 ){
-        res.render('chat', req.session.id);
+app.get('/chat/:id', (req, res) => {//id est id1 + id2 doivent etre dans l'ordre croissant pour que la session soit unique
+    //pour recuperer les id des 2 utilisateurs, regarder si celui de l'utilisateur courant est dedans puis en soustraire celui de l'autre utlisateur
+    let chatID = req.params.id + "";
+    let otherID = model.otherID(chatID, req.session.user);
+    if(otherID === -1){
+        res.redirect('/profil')
     }
-    else{
-        res.redirect('/profil');
-    }
+    var conv = model.getConversation(req.session.user, otherID);
+    res.render('chat', conv);
+
 });
 
 
-app.get('/chat', (req, res) => {
-    res.render('chat', req.session.id);
+app.get('/chatHub', (req, res) => {
+    let chatID = "-135251";
+    console.log(parseInt(chatID));
+
+
+    let infoUser = model.userInfo(req.session.user);
+    let infoFriends = model.allFriends(req.session.user);
+    res.render('chathub', {infoUser :infoUser, infoFriends : infoFriends});
 });

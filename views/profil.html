@@ -1,16 +1,16 @@
 {{> header}}
 
-<body>
+<body class="container-lg">
 
 <div class="row py-5 px-4">
     <div class="col-md-5 mx-auto">
-        <!-- Profile widget -->
         <div class="bg-white shadow rounded overflow-hidden">
             <div class="px-4 pt-0 pb-4 cover">
                 <div class="media align-items-end profile-head">
                     <div class="profile mr-3"><img src="{{infoUser.photo_de_profil}}" alt="..." width="130"
                                                    class="rounded mb-2 img-thumbnail"><a href="/modifications"
-                                                                                         class="btn btn-outline-dark btn-sm btn-block">Modifier</a></div>
+                                                                                         class="btn btn-outline-dark btn-sm btn-block">Modifier</a>
+                    </div>
                     <div class="media-body mb-5 ">
                         <h4 class="mt-0 mb-0">{{infoUser.nameUser}}</h4>
                         <p class="small mb-4"><i class="fas fa-map-marker-alt mr-2"></i></p>
@@ -114,9 +114,6 @@
         </div>
     </div>
 </div>
-</div>
-
 </body>
-</html>
 
 {{> footer}}

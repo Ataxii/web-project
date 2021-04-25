@@ -134,7 +134,8 @@ exports.allFriends = (id) => {
             let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.friends);
             let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.friends);
             let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.friends);
-            let info = { id: element.friends, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
+            let roomID = this.roomID(id, element.friends);
+            let info = { id: element.friends, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie, roomID : roomID };
             array.push(info);
         }
     }
@@ -174,8 +175,27 @@ exports.addConversation = (id1, id2, text )=> {// envoie d'un message de id1 ver
 
 }
 
+exports.roomID = (id1, id2)=> {// renvoie la concatenation de id1 et id2, concaténé en ordre croissant
+    let result = "";
+    if(id1 > id2){
+        return result + id2 + id2;
+    }
+    return result + id1 + id2;
+}
+
 exports.getConversation = (id1, id2)=> {
     //todo recuperer une conversation
     let conversation = db.prepare('SELECT message FROM chat WHERE id1 = ? AND id2 = ? ORDER BY date').get(id1, id2);
     return conversation
 }
+
+exports.otherID = (chatID, id)=> {// -1 not in 1 a gauche 2 a droite
+    if(chatID.indexOf(id, 0)){
+        return parseInt(chatID.substring(id.size+1, chatID.size));
+    }
+    if(chatID.indexOf(id, chatID.size - id.size)){
+        return parseInt(chatID.substring(0, chatID.size- id.size));
+    }
+    return -1;
+}
+
