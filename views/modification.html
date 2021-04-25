@@ -1,6 +1,6 @@
 {{> header}}
 
-<body>
+<body class="container-sm align-items-center">
 <div class="page-wrapper bg-gra-02 p-t-130 p-b-100 font-poppins ">
     <div class="wrapper wrapper--w680">
         <div class="card card-4">
@@ -8,36 +8,49 @@
                 <h2 class="title">Modifications du profil</h2>
                 <form method="POST" action="/modifications">
                     <div class="row row-space">
-                        <div class="col-2">
+                        <div class="col-4">
                             {{#admin}}
                             <p>id : <textarea class="form-control" name="id">{{info.id}}</textarea></p>
                             {{/admin}}
                         </div>
                     </div>
                     <div class="row row-space">
-                        <div class="col-2">
-                            <p>Photo de profil : <textarea class="form-control" name="photo_de_profil">{{info.photo_de_profil}}</textarea></p>
+                        <div class="col-4">
+                            <p>Photo de profil : <textarea class="form-control" name="photo_de_profil">{{info.photo_de_profil}}</textarea>
+                            </p>
                         </div>
                     </div>
                     <div class="row row-space">
-                        <div class="col-2">
-                            <p>biographie : <textarea class="form-control" name="biographie">{{info.biographie}}</textarea></p>
+                        <div class="col-4">
+                            <p>Biographie : <textarea class="form-control"
+                                                      name="biographie">{{info.biographie}}</textarea></p>
                         </div>
                     </div>
                     <div class="row row-space">
-                        <div class="col-2">
+                        <div class="col-4">
+                            <p>Universitée :
+                                <select id="inputState" class="form-control" name="univ">
+                                    <option selected>{{info.univ}}</option>
+                                    {{#univ}}
+                                    <option>{{name}}</option>
+                                    {{/univ}}
+                                </select>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row row-space">
+                        <div class="col-4">
                             <p>Etudes : <textarea class="form-control" name="etudes">{{info.etudes}}</textarea></p>
                         </div>
                     </div>
                     <div class="row row-space">
-                        <div class="col-2">
-                            <p>contact : <textarea class="form-control" name="contact">{{info.contact}}</textarea></p>
+                        <div class="col-4">
+                            <p>Contact : <textarea class="form-control" name="contact">{{info.contact}}</textarea></p>
                         </div>
                     </div>
-
                     <div class="p-t-15">
-                        <input class="form-control btn btn-primary mr-2" type="submit" value="Modifier">
-                        <a class="form-control btn btn-primary" href="/research">Annuler</a>
+                        <a class="form-control btn btn-danger col-3" href="/research">Annuler</a>
+                        <input class="form-control btn btn-primary mr-2 col-3" type="submit" value="Modifier">
                     </div>
                 </form>
             </div>

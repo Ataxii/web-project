@@ -1,11 +1,20 @@
 "use strict"
 /* Module de recherche dans une base de recettes de cuisine */
 const Sqlite = require('better-sqlite3');
-
+const fs = require('fs');
 let db = new Sqlite('../sqLite/main.db');
 
 let idUser = 3;
 
+//recupere depuis le fichier json le nom de toutes les universitées en france
+exports.universityList = () => {
+    let university = JSON.parse(fs.readFileSync("E:\\Fac\\L2\\semestre2\\web\\web-project-for-windows\\universityList.json"));
+    let result = [];
+    for(let univ of university){
+      result.push({name : univ.fields.uo_lib_officiel})
+    }
+    return result
+}
 
 exports.register = (nameUser, passUser) => {
     if (this.isRegister(nameUser)) {
@@ -50,7 +59,8 @@ exports.allUserInfo = (id) => {
             let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.id);
             let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.id);
             let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.id);
-            let info = { id: element.id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
+            let univ = db.prepare('SELECT university FROM userProfil WHERE id = ?').get(element.id);
+            let info = { id: element.id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie, univ : univ.university };
             array.push(info);
         }
     }
@@ -68,7 +78,8 @@ exports.allUserInfoWithResearch = (id, research) => { //l'argument research est 
             let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(element.id);
             let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(element.id);
             let bio = db.prepare('SELECT biographie FROM userProfil WHERE id = ? ').get(element.id);
-            let info = { id: element.id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie };
+            let univ = db.prepare('SELECT university FROM userProfil WHERE id = ?').get(element.id);
+            let info = { id: element.id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil, biographie: bio.biographie, univ : univ.university };
             array.push(info);
         }
     }
@@ -84,16 +95,17 @@ exports.userInfo = (id) => {
     let biographie = db.prepare('SELECT biographie FROM userProfil WHERE id = ?').get(id);
     let etudes = db.prepare('SELECT etudes FROM userProfil WHERE id = ?').get(id);
     let contact = db.prepare('SELECT contact FROM userProfil WHERE id = ?').get(id);
-    let info = { id: id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil , biographie : biographie.biographie , etudes : etudes.etudes , contact : contact.contact };
+    let univ = db.prepare('SELECT university FROM userProfil WHERE id = ?').get(id);
+    let info = { id: id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil , biographie : biographie.biographie , etudes : etudes.etudes , contact : contact.contact, univ : univ.university };
     return info;
 }
 
 // fonction create/ set avec un id et tout les infos,
-exports.modification = (id, photo, biographie, etudes, contact )=> {
+exports.modification = (id, photo, biographie, etudes, contact, univ)=> {
 
     var deleting = db.prepare('DELETE FROM userProfil WHERE id = ' + id).run();
-    var insertLogin = db.prepare('INSERT INTO userProfil VALUES (@id, @photo_de_profil, @biographie, @etudes, @contact)');
-    var value = {id : id, photo_de_profil : photo, biographie: biographie, etudes : etudes, contact : contact};
+    var insertLogin = db.prepare('INSERT INTO userProfil VALUES (@id, @photo_de_profil, @biographie, @etudes, @contact, @university)');
+    var value = {id : id, photo_de_profil : photo, biographie: biographie, etudes : etudes, contact : contact, university : univ};
     insertLogin.run(value);
 }
 
@@ -178,7 +190,7 @@ exports.addConversation = (id1, id2, text )=> {// envoie d'un message de id1 ver
 exports.roomID = (id1, id2)=> {// renvoie la concatenation de id1 et id2, concaténé en ordre croissant
     let result = "";
     if(id1 > id2){
-        return result + id2 + id2;
+        return result + id2 + id1;
     }
     return result + id1 + id2;
 }
@@ -190,12 +202,23 @@ exports.getConversation = (id1, id2)=> {
 }
 
 exports.otherID = (chatID, id)=> {// -1 not in 1 a gauche 2 a droite
-    if(chatID.indexOf(id, 0)){
-        return parseInt(chatID.substring(id.size+1, chatID.size));
+    //conversion obligatoir en string pour pouvoir faire des calcules de longueur dessus
+    if (chatID.length < 2 || id.length === 0 ){
+        return -1;
     }
-    if(chatID.indexOf(id, chatID.size - id.size)){
-        return parseInt(chatID.substring(0, chatID.size- id.size));
+    chatID = chatID + ""
+    id = id + ""
+    if (chatID.search(id) === 0) {//on regarde si la substring de la taille de l'id est identique a l'id avec des substring prisent au debut et a la fin
+        let startSub = chatID.substring(0, id.length)
+        let endSub = chatID.substring(chatID.length - id.length)
+        if (startSub === id) { //l'id est situé au debut donc l'autre id commence a la taille de l'id
+            return parseInt(chatID.substring(id.length +1));
+        }
+        if (endSub === id){//inversement
+            return parseInt(chatID.substring(0, chatID.length - id.length));
+        }
     }
+    //l'id n'est pas au debut ni a la fin ou n'existe tout simplement pas
     return -1;
 }
 

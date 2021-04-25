@@ -8,16 +8,15 @@
                     <ul class="list-unstyled chat-list mt-2 mb-0">
 
                         {{#infoFriends}}
-                        <li class="clearfix">
-                            <a href="/chat/{{roomID}}">
-
+                        <a href="/chat/{{roomID}}">
+                            <li class="clearfix">
                                 <img src="{{photo_de_profil}}" alt="avatar">
                                 <div class="about">
                                     <div class="name">{{nameUser}}</div>
                                     <div class="status"><i class="fa fa-circle offline"></i></div>
                                 </div>
-                            </a>
-                        </li>
+                            </li>
+                        </a>
                         {{/infoFriends}}
 
                     </ul>

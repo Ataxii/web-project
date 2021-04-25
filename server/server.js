@@ -156,7 +156,8 @@ app.get('/delfriends/:id', is_authenticated, (req, res) => {
 //pour l'utilisateur connecté
 app.get('/modifications', is_authenticated, (req, res) => {
     let infoUser = model.userInfo(req.session.user);
-    res.render('modification', {info: infoUser, infoUser : infoUser} );
+    let univ = model.universityList();
+    res.render('modification', {info: infoUser, infoUser : infoUser, univ : univ} );
 
 });
 
@@ -165,20 +166,22 @@ app.get('/modifications/:id', is_authenticated, (req, res) => {
     if (res.locals.admin){
         let info = model.userInfo(req.params.id);
         let infoUser = model.userInfo(req.session.user);
-        res.render('modification', {info: info, infoUser : infoUser} );
+        let univ = model.universityList();
+        res.render('modification', {info: info, infoUser : infoUser, univ : univ} );
     }
     else
         res.redirect('/profil');
 });
 
 app.post('/modifications', (req, res) => {
-    var allInfo = {id : req.body.id, photo_de_profil : req.body.photo_de_profil, biographie: req.body.biographie, etudes : req.body.etudes, contact : req.body.contact}
+    console.log(req.body.univ)
     var id = req.body.id;
     console.log(id)
-    if(req.body.id === undefined){
+    if(id === undefined){//savoir si les modifications on ete apporté par un admin ou
         id = req.session.user
     }
-    model.modification(id, req.body.photo_de_profil, req.body.biographie, req.body.etudes, req.body.contact);
+    console.log(id)
+    model.modification(id, req.body.photo_de_profil, req.body.biographie, req.body.etudes, req.body.contact, req.body.univ);
     res.redirect('/profil');
 });
 
@@ -216,18 +219,17 @@ app.get('/chat/:id', (req, res) => {//id est id1 + id2 doivent etre dans l'ordre
     let chatID = req.params.id + "";
     let otherID = model.otherID(chatID, req.session.user);
     if(otherID === -1){
-        res.redirect('/profil')
+        res.status(404).send('vous n\'avez pas acces à ce chat, retour à votre    <a class="btn btn-primary" href="/profil" role="button">profil</a>');
     }
+    let infoUser = model.userInfo(req.session.user);
+    let infoFriends = model.allFriends(req.session.user);
     var conv = model.getConversation(req.session.user, otherID);
-    res.render('chat', conv);
+    res.render('chat', {infoUser :infoUser, infoFriends : infoFriends, conv : conv});
 
 });
 
 
 app.get('/chatHub', (req, res) => {
-    let chatID = "-135251";
-    console.log(parseInt(chatID));
-
 
     let infoUser = model.userInfo(req.session.user);
     let infoFriends = model.allFriends(req.session.user);
