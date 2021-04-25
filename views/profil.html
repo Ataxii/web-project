@@ -1,12 +1,12 @@
 {{> header}}
 
-<body class="container-sm">
+
 
 <div class="row py-5 px-4">
     <div class="col-md-8 mx-auto">
-        <div class="bg-white shadow rounded overflow-hidden">
+        <div class="shadow rounded overflow-hidden" style=" background-color: #dfd3c3">
             <div class="px-4 pt-0 pb-4 cover">
-                <div class="media align-items-end profile-head">
+                <div class="media align-items-end profile-head mt-2">
                     <div class="profile mr-3"><img src="{{infoUser.photo_de_profil}}" alt="..." width="130"
                                                    class="rounded mb-2 img-thumbnail"><a href="/modifications"
                                                                                          class="btn btn-outline-dark btn-sm btn-block">Modifier</a>
@@ -17,16 +17,16 @@
                     </div>
                 </div>
             </div>
-            <div class="bg-light p-4 d-flex text-center">
+            <div class=" p-4 d-flex text-center" style="background-color: #f0ece2">
                 <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                        <h5 class="text-dark font-weight-bold mb-0 d-block">{{infoUser.univ}}</h5>
+                        <h5 class=" font-weight-bold mb-0 d-block">{{infoUser.univ}}</h5>
                     </li>
                 </ul>
             </div>
             <div class="px-4 py-3">
-                <h5 class="mb-0">A propos</h5>
-                <div class="p-4 rounded shadow-sm bg-light">
+                <h5 class="mb-1">A propos</h5>
+                <div class="p-4 rounded shadow-sm " style="background-color: #f0ece2">
                     <p class="font-italic mb-0">{{infoUser.biographie}}</p>
                     <p class="font-italic mb-0">{{infoUser.etudes}}</p>
                     <p class="font-italic mb-0">{{infoUser.contact}}</p>

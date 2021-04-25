@@ -173,7 +173,7 @@ app.get('/modifications/:id', is_authenticated, (req, res) => {
         res.redirect('/profil');
 });
 
-app.post('/modifications', (req, res) => {
+app.post('/modifications', is_authenticated, (req, res) => {
     console.log(req.body.univ)
     var id = req.body.id;
     console.log(id)
@@ -214,7 +214,7 @@ io.on('connection', (socket) => {
     })
 });
 
-app.get('/chat/:id', (req, res) => {//id est id1 + id2 doivent etre dans l'ordre croissant pour que la session soit unique
+app.get('/chat/:id', is_authenticated, (req, res) => {//id est id1 + id2 doivent etre dans l'ordre croissant pour que la session soit unique
     //pour recuperer les id des 2 utilisateurs, regarder si celui de l'utilisateur courant est dedans puis en soustraire celui de l'autre utlisateur
     let chatID = req.params.id + "";
     let otherID = model.otherID(chatID, req.session.user);
@@ -229,7 +229,7 @@ app.get('/chat/:id', (req, res) => {//id est id1 + id2 doivent etre dans l'ordre
 });
 
 
-app.get('/chatHub', (req, res) => {
+app.get('/chatHub', is_authenticated, (req, res) => {
 
     let infoUser = model.userInfo(req.session.user);
     let infoFriends = model.allFriends(req.session.user);

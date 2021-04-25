@@ -40,8 +40,33 @@
     <!-- Custom styles for this template -->
     <link href="cover.css" rel="stylesheet">
 </head>
-<body class="d-flex h-100 text-center text-white bg-dark">
 
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+
+<body class="d-flex h-100 text-center text-white bg-dark">
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+<script>
+    window.cookieconsent.initialise({
+        "palette": {
+            "popup": {
+                "background": "#edeff5",
+                "text": "#838391"
+            },
+            "button": {
+                "background": "transparent",
+                "text": "#4b81e8",
+                "border": "#4b81e8"
+            }
+        },
+        "position": "top",
+        "content": {
+            "message": "Ce site utilise des cookies pour vous offrir le meilleur service. En poursuivant votre navigation, vous acceptez l’utilisation des cookies. Vos cookies seront utilisés uniquement pour ce site et rien d'autre.",
+            "dismiss": "j'ai commpris",
+            "link": "je veux en savoir plus"
+        }
+    });
+</script>
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <header class="mb-auto">
         <div>
@@ -56,9 +81,6 @@
     <main class="px-3">
         <h1>Présentation</h1>
         <p class="lead">SchooLink est un site pour mettre en lien plusieurs etudiants pendant cette periode difficile.</p>
-        <p class="lead">
-            <a href="/documentation" class="btn btn-lg btn-secondary fw-bold border-white bg-white">En savoir plus</a>
-        </p>
     </main>
 
     <footer class="mt-auto text-white-50">
