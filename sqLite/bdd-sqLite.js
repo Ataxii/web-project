@@ -5,18 +5,19 @@ db.prepare('DROP TABLE IF EXISTS userLogin').run();
 db.prepare('DROP TABLE IF EXISTS userProfil').run();
 db.prepare('DROP TABLE IF EXISTS userFriends').run();
 db.prepare('DROP TABLE IF EXISTS chat').run();
+db.prepare('DROP TABLE IF EXISTS saveid').run();
 
 db.prepare('CREATE TABLE userLogin (id INTEGER PRIMARY KEY, nameUser TEXT, passUser TEXT)').run();
 db.prepare('CREATE TABLE userProfil (id INTEGER PRIMARY KEY, photo_de_profil TEXT, biographie TEXT, etudes TEXT, contact TEXT, university TEXT)').run();
 db.prepare('CREATE TABLE userFriends (id INTEGER, friends INTEGER)').run();
 db.prepare('CREATE TABLE chat (id1 INTEGER, id2 INTEGER, message TEXT, date datetime)').run(); //id1 et id2 sont juste la pour stocker les id des utilisateurs, message proviens de l'utilisateur 1 sur l'utilisateur 2
-
+db.prepare('CREATE TABLE saveid (id INTEGER)').run();
 
 var insertLogin = db.prepare('INSERT INTO userProfil VALUES (@id, @photo_de_profil, @biographie, @etudes, @contact, @university)');
 var insertProfil = db.prepare('INSERT INTO userLogin VALUES (@id, @nameUser, @passUser)');
 
 
-
+db.prepare('INSERT INTO saveid VALUES (@id)').run({id : 3});
 
 var value = {id : 1, photo_de_profil : "https://www.jeancoutu.com/globalassets/revamp/photo/conseils-photo/20160302-01-reseaux-sociaux-profil/photo-profil_301783868.jpg", biographie: "bastien, 32 ans, etudiant chercheur", etudes : "portail descrates", contact : "email : fakeMail@gmail.com", university :"aix-marseille"};
 var value1 = {id : 1, nameUser : "jean", passUser : "123456789"};

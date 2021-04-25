@@ -44,7 +44,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
 
 <body class="d-flex h-100 text-center text-white bg-dark">
-<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
+</script>
 <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" data-cfasync="false"></script>
 <script>
     window.cookieconsent.initialise({
@@ -71,10 +71,18 @@
     <header class="mb-auto">
         <div>
             <h3 class="float-md-start mb-0">Bienvenue sur SchooLink</h3>
+            {{#authenticated}}
+            <nav class="nav nav-masthead justify-content-center float-md-end">
+                <a class="nav-link active" aria-current="page" href="/profil">Profil</a>
+            </nav>
+            {{/authenticated}}
+            {{^authenticated}}
             <nav class="nav nav-masthead justify-content-center float-md-end">
                 <a class="nav-link active" aria-current="page" href="/login">Connexion</a>
                 <a class="nav-link" href="/register">Inscription</a>
             </nav>
+            {{/authenticated}}
+
         </div>
     </header>
 

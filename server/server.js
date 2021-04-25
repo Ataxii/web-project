@@ -57,14 +57,13 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
     //faire un message en rouge avec l'erreur acssocié plustard
-    if(req.body.passUser != req.body.passUserConf){
+    if(req.body.passUser !== req.body.passUserConf){
         res.redirect('/register');
     }
-    var registerable = model.register(req.body.nameUser, req.body.passUser);
-    if (registerable) {
-        res.redirect('/');
+    var registered = model.register(req.body.nameUser, req.body.passUser);
+    if (registered) {
+        res.redirect('/modifications');
     }
-    res.redirect('/register');
 });
 
 

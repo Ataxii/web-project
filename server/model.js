@@ -4,7 +4,21 @@ const Sqlite = require('better-sqlite3');
 const fs = require('fs');
 let db = new Sqlite('../sqLite/main.db');
 
-let idUser = 3;
+
+
+//sauvegarder le userID dans un fichié text
+exports.writeID = (id) => {
+    db.prepare('DELETE FROM saveid').run();
+    db.prepare('INSERT INTO saveid VALUES (@id)').run({id : id});
+}
+
+exports.readID = () => {
+    let id = db.prepare('SELECT id FROM saveid').get();
+    console.log(id.id);
+    return parseInt(id.id);
+}
+let reading = this.readID();
+let idUser = reading;
 
 //recupere depuis le fichier json le nom de toutes les universitées en france
 exports.universityList = () => {
@@ -23,8 +37,17 @@ exports.register = (nameUser, passUser) => {
 
     let prepare = db.prepare('INSERT INTO userLogin VALUES (@id, @nameUser, @passUser)');
     prepare.run({ id: idUser, nameUser: nameUser, passUser: passUser });
+    this.modification(idUser, " ", " ", " ", " ", " " );
     idUser++;
+    this.writeID(idUser);
     return true;
+}
+
+exports.isRegister = (nameUser) => {
+    let pseudolog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ?').get(nameUser);
+
+    return pseudolog !== undefined;
+
 }
 
 exports.login = (nameUser, passUser) => {
@@ -38,11 +61,7 @@ exports.login = (nameUser, passUser) => {
     } else return 0;
 }
 
-exports.isRegister = (nameUser) => {
-    let pseudolog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ?').get(nameUser);
-    return pseudolog !== undefined;
 
-}
 
 exports.lenghtPassword = ( passUser) => {
     if (passUser.length < 8){
@@ -68,8 +87,7 @@ exports.allUserInfo = (id) => {
 }
 
 exports.allUserInfoWithResearch = (id, research) => { //l'argument research est une string du nom
-    //TODO selectioner dabbord l'id dans la prelier table pour ensuite recuperer les infos, la recupertaiton des id se fait avec la recherche mais pas le reste
-    //recuperation des id
+   //recuperation des id
     research = "%" + research + "%"
     let array = [];
     var ids = db.prepare('SELECT id FROM userLogin WHERE nameUser LIKE ?').all(research);
@@ -86,18 +104,40 @@ exports.allUserInfoWithResearch = (id, research) => { //l'argument research est 
     return array;
 }
 
-
-
 //
 exports.userInfo = (id) => {
-    let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(id);
+
     let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(id);
+    let photo = db.prepare('SELECT photo_de_profil FROM userProfil WHERE id = ? ').get(id);
     let biographie = db.prepare('SELECT biographie FROM userProfil WHERE id = ?').get(id);
     let etudes = db.prepare('SELECT etudes FROM userProfil WHERE id = ?').get(id);
     let contact = db.prepare('SELECT contact FROM userProfil WHERE id = ?').get(id);
     let univ = db.prepare('SELECT university FROM userProfil WHERE id = ?').get(id);
-    let info = { id: id, nameUser: pseudo.nameUser , photo_de_profil : photo.photo_de_profil , biographie : biographie.biographie , etudes : etudes.etudes , contact : contact.contact, univ : univ.university };
-    return info;
+    //securité si jamais rien n'est renseigné
+    if(photo === undefined ){
+        photo = {nameUser : " "};
+    }
+    if(biographie === undefined ){
+        biographie = {nameUser : " "};
+    }
+    if(etudes  === undefined ){
+        etudes  = {nameUser : " "};
+    }
+    if(contact === undefined ){
+        contact = {nameUser : " "};
+    }
+    if(univ === undefined ){
+        univ = {nameUser : " "};
+    }
+    return {
+        id: id,
+        nameUser: pseudo.nameUser,
+        photo_de_profil: photo.photo_de_profil,
+        biographie: biographie.biographie,
+        etudes: etudes.etudes,
+        contact: contact.contact,
+        univ: univ.university
+    };
 }
 
 // fonction create/ set avec un id et tout les infos,
@@ -197,8 +237,7 @@ exports.roomID = (id1, id2)=> {// renvoie la concatenation de id1 et id2, concat
 
 exports.getConversation = (id1, id2)=> {
     //todo recuperer une conversation
-    let conversation = db.prepare('SELECT message FROM chat WHERE id1 = ? AND id2 = ? ORDER BY date').get(id1, id2);
-    return conversation
+    return db.prepare('SELECT message FROM chat WHERE id1 = ? AND id2 = ? ORDER BY date').get(id1, id2)
 }
 
 exports.otherID = (chatID, id)=> {// -1 not in 1 a gauche 2 a droite
