@@ -1,85 +1,77 @@
 {{> header}}
 
-<div class="container">
-    <div class="row clearfix">
-        <div class="col-lg-12">
-            <div class="card chat-app">
-                <div id="plist" class="people-list">
-                    <ul class="list-unstyled chat-list mt-2 mb-0">
 
-                        {{#infoFriends}}
-                        <a href="/chat/{{roomID}}">
-                            <li class="clearfix">
-                                <img src="{{photo_de_profil}}" alt="avatar">
-                                <div class="about">
-                                    <div class="name">{{nameUser}}</div>
-                                    <div class="status"><i class="fa fa-circle offline"></i></div>
-                                </div>
-                            </li>
-                        </a>
-                        {{/infoFriends}}
+<div class="row clearfix">
+    <div class="col-lg-12">
+        <div style="display: none" id="chatRoom">
+            {{chatID}}
+        </div>
+        <div class="card chat-app">
+            <div id="plist" class="people-list">
+                <ul class="list-unstyled chat-list mt-2 mb-0">
+
+                    {{#infoFriends}}
+                    <a href="/chat/{{roomID}}">
+                        <li class="clearfix">
+                            <img src="{{photo_de_profil}}" alt="avatar">
+                            <div class="about">
+                                <div class="name">{{nameUser}}</div>
+                                <div class="status"><i class="fa fa-circle offline"></i></div>
+                            </div>
+                        </li>
+                    </a>
+                    {{/infoFriends}}
+
+                </ul>
+            </div>
+            <div class="chat">
+                <div class="chat-header clearfix">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                <img src="{{infoOther.photo_de_profil}}" alt="avatar">
+                            </a>
+                            <div class="chat-about">
+                                <h6 class="m-b-0">{{infoOther.nameUser}}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-history">
+                    <h4>
+                        Historique :
+                    </h4>
+                    {{#conv}}
+                    <div class="">
+                        {{message}}
+                    </div>
+                    {{/conv}}
+                    <h4>
+                        Nouveaux message :
+                    </h4>
+                </div>
+                <div class="chat-history">
+                    <ul id="message" class="m-b-0">
 
                     </ul>
                 </div>
-                <div class="chat">
-                    <div class="chat-header clearfix">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                                </a>
-                                <div class="chat-about">
-                                    <h6 class="m-b-0">Aiden Chavez</h6>
-                                    <small>Last seen: 2 hours ago</small>
-                                </div>
-                            </div>
+
+                <div class="chat-message clearfix">
+                    <div class="input-group mb-0">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-send"></i></span>
                         </div>
-                    </div>
-                    <div class="chat-history">
-                        <ul class="m-b-0">
-                            <li class="clearfix">
-                                <div class="message-data text-right">
-                                    <span class="message-data-time">10:10 AM, Today</span>
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                </div>
-                                <div class="message other-message float-right"> Hi Aiden, how are you? How is the
-                                    project coming along?
-                                </div>
-                            </li>
-                            <li class="clearfix">
-                                <div class="message-data">
-                                    <span class="message-data-time">10:12 AM, Today</span>
-                                </div>
-                                <div class="message my-message">Are we meeting today?</div>
-                            </li>
-                            <li class="clearfix">
-                                <div class="message-data">
-                                    <span class="message-data-time">10:15 AM, Today</span>
-                                </div>
-                                <div class="message my-message">Project has been already finished and I have results to
-                                    show you.
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="chat-message clearfix">
-                        <div class="input-group mb-0">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-send"></i></span>
-                            </div>
-                            <input type="text" class="form-control" placeholder="Enter text here...">
-                        </div>
+                        <form action="">
+                            <input autocomplete="off" id="msg" type="text" class="form-control"
+                                   placeholder="Enter text here...">
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div id="message"></div>
-<form action="">
-    <input id="msg" autocomplete="off">
-    <button>send</button>
-</form>
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -88,18 +80,38 @@
 <script>
     $(function () {
         var socket = io();
+        var chatid = parseInt(document.getElementById("chatRoom").textContent)
 
         $("form").submit(function (e) {//emission du message au serveur
             e.preventDefault();
-            socket.emit("chat message", $("#msg").val());
+            socket.emit('chat message', {chatID: chatid, msg: $("#msg").val()});
             $("#msg").val("");
             return false;
         });
 
-        socket.on('chat message', function (msg) {//reception du message depuis le serveur
-            $("#message").append($("<p>").text(msg));
+        socket.on('chat message me', function (data) {//reception du message depuis le serveur
+            $("#message").append("<li class=\"clearfix\">\n" +
+                "                                <div class=\"message-data text-right\">\n" +
+                "                                    <span class=\"message-data-time\">" + data.info.nameUser + "</span>\n" +
+                "                                    <img src=\" " + data.info.photo_de_profil + " \" alt=\"avatar\">\n" +
+                "                                </div>\n" +
+                "                                <div class=\"message other-message float-right\"> " +
+                data.msg +
+                "                                </div>\n" +
+                "                            </li>");
         })
 
+        socket.on('chat message other', function (data) {//reception du message depuis le serveur
+            $("#message").append("<li class=\"clearfix\">\n" +
+                "                                <div class=\"message-data\">\n" +
+                "                                    <span class=\"message-data-time\">" + data.info.nameUser + "</span>\n" +
+                "                                    <img src=\"" + data.info.photo_de_profil + " \" alt=\"avatar\">\n" +
+                "                                </div>\n" +
+                "                                <div class=\"message other-message float\"> " +
+                data.msg +
+                "                                </div>\n" +
+                "                            </li>");
+        })
     });
 
 </script>

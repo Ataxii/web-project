@@ -4,6 +4,7 @@ var mustache = require('mustache-express');
 const serveur = require('http').createServer(app);
 var io = require('socket.io')(serveur);
 
+//todo mettre des messages dans la console pour les actions importante
 
 var model = require('./model');
 
@@ -173,43 +174,59 @@ app.get('/modifications/:id', is_authenticated, (req, res) => {
 });
 
 app.post('/modifications', is_authenticated, (req, res) => {
-    console.log(req.body.univ)
     var id = req.body.id;
-    console.log(id)
     if(id === undefined){//savoir si les modifications on ete apporté par un admin ou
         id = req.session.user
     }
-    console.log(id)
     model.modification(id, req.body.photo_de_profil, req.body.biographie, req.body.etudes, req.body.contact, req.body.univ);
     res.redirect('/profil');
 });
 
-
 function is_authenticated(req, res, next) {
-
     if (req.session.user !== undefined) {
         return next();
     }
     return res.status(401).send('Authentication required  <a class="btn btn-primary" href="/login" role="button">Connexion</a>');
 }
 
-
-
 serveur.listen(3000, () => console.log('listening on http://localhost:3000'))
-
-
 
 //PARTIE DE CHAT
 
-
+var people={};
 
 io.on('connection', (socket) => {
     //sauvegarder les id de se qui se connect
-    console.log("utilisateur connecté : " + socket.request.session.user);
+    let name = socket.request.session.user
+    people[name] = socket.id;
+    socket.emit()
 
-    socket.on('chat message', (msg) => {//ecoute du message 
-        console.log(msg);
-        io.emit('chat message', msg);//ici on renvoie le message a la page html, c'est ici qu'il faut gerer la fait que ce soit un utilisateur ou l'autre
+    socket.on('chat message', (data) => {//ecoute du message
+
+        let chatID = data.chatID;
+        let otherID = model.otherID(chatID, name);
+
+        //construction du message pour le sauvegarder
+        let date1 = new Date();
+
+        let dateLocale = date1.toLocaleString('fr-FR',{
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'});
+
+        let saveMessage = dateLocale + " |> " + model.userInfo(name).nameUser + " : " + data.msg;
+
+        model.addConversation(chatID, saveMessage);
+
+        let newData = {msg: data.msg, info : model.userInfo(name)}
+
+        //les deux emit servent pour savoir si on met le message d'un coté ou de l'autre
+        io.to(people[name]).emit('chat message me', newData)
+        io.to(people[otherID]).emit('chat message other', newData);//ici on renvoie le message a la page html, c'est ici qu'il faut gerer la fait que ce soit un utilisateur ou l'autre
+
+
     })
 });
 
@@ -220,10 +237,14 @@ app.get('/chat/:id', is_authenticated, (req, res) => {//id est id1 + id2 doivent
     if(otherID === -1){
         res.status(404).send('vous n\'avez pas acces à ce chat, retour à votre    <a class="btn btn-primary" href="/profil" role="button">profil</a>');
     }
+
+    //todo tester le fait qu'il faut etre amis pour pouvoir se parler
     let infoUser = model.userInfo(req.session.user);
     let infoFriends = model.allFriends(req.session.user);
-    var conv = model.getConversation(req.session.user, otherID);
-    res.render('chat', {infoUser :infoUser, infoFriends : infoFriends, conv : conv});
+    let infoOther = model.userInfo(otherID);
+    let conv = model.getConversation(chatID);
+
+    res.render('chat', {infoUser :infoUser, infoFriends : infoFriends, conv : conv, infoOther : infoOther, chatID : chatID});
 
 });
 

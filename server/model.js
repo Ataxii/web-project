@@ -14,7 +14,6 @@ exports.writeID = (id) => {
 
 exports.readID = () => {
     let id = db.prepare('SELECT id FROM saveid').get();
-    console.log(id.id);
     return parseInt(id.id);
 }
 let reading = this.readID();
@@ -221,10 +220,8 @@ exports.delete = (id, idOtherUser )=> {
 
 ////CHAT///////
 
-exports.addConversation = (id1, id2, text )=> {// envoie d'un message de id1 vers id2
-    
-    db.prepare('INSERT INTO chat VALUES(@id1, @id2, @message, NOW()').run({id1 : id1, id2 : id2, message : text});
-
+exports.addConversation = (id, text)=> {// id du chat et le text dans le quel le nom de l'utilisateur est marqué
+    db.prepare('INSERT INTO chat VALUES(@idchat, @message)').run({idchat : id,  message : text});
 }
 
 exports.roomID = (id1, id2)=> {// renvoie la concatenation de id1 et id2, concaténé en ordre croissant
@@ -235,25 +232,26 @@ exports.roomID = (id1, id2)=> {// renvoie la concatenation de id1 et id2, concat
     return result + id1 + id2;
 }
 
-exports.getConversation = (id1, id2)=> {
-    //todo recuperer une conversation
-    return db.prepare('SELECT message FROM chat WHERE id1 = ? AND id2 = ? ORDER BY date').get(id1, id2)
+exports.getConversation = (id)=> {
+    return db.prepare('SELECT message FROM chat WHERE idchat = ? ').all(id)
 }
 
 exports.otherID = (chatID, id)=> {// -1 not in 1 a gauche 2 a droite
     //conversion obligatoir en string pour pouvoir faire des calcules de longueur dessus
-    if (chatID.length < 2 || id.length === 0 ){
-        return -1;
-    }
     chatID = chatID + ""
     id = id + ""
-    if (chatID.search(id) === 0) {//on regarde si la substring de la taille de l'id est identique a l'id avec des substring prisent au debut et a la fin
+    if (id === ""){
+        return -1;
+    }
+    if (chatID.search(id) !== undefined) {//on regarde si la substring de la taille de l'id est identique a l'id avec des substring prisent au debut et a la fin
+
         let startSub = chatID.substring(0, id.length)
         let endSub = chatID.substring(chatID.length - id.length)
-        if (startSub === id) { //l'id est situé au debut donc l'autre id commence a la taille de l'id
-            return parseInt(chatID.substring(id.length +1));
+
+        if (parseInt(startSub) === parseInt(id)) { //l'id est situé au debut donc l'autre id commence a la taille de l'id
+            return parseInt(chatID.substring(id.length));
         }
-        if (endSub === id){//inversement
+        if (parseInt(endSub) === parseInt(id)){//inversement
             return parseInt(chatID.substring(0, chatID.length - id.length));
         }
     }
