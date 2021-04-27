@@ -2,7 +2,9 @@
 
 
 <a class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-    <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+    <svg class="bi me-2" width="30" height="24">
+        <use xlink:href="#bootstrap"></use>
+    </svg>
     <span class="fs-5 fw-semibold">Personnes trouvées</span>
 </a>
 <div class="list-group list-group-flush scrollarea">
@@ -19,13 +21,13 @@
                 <div class="ml-3 w-100">
                     <span class="text-dark text-sm-center font-weight-bold mb-0 d-block mx-4">{{univ}}</span>
                 </div>
-                    <div class="button mt-4 d-flex flex-row d-inline-flex align-items-center">
-                        <a href="/profilUser/{{id}}"
-                           class="btn btn-sm btn-outline-primary w-100">Profil</a>
-                        <a href="/addfriends/{{id}}" class="btn d-inline-flex btn-sm btn-primary w-100 ml-2">
-                            Ajouter
-                        </a>
-                    </div>
+                <div class="button mt-4 d-flex flex-row d-inline-flex align-items-center">
+                    <a href="/profilUser/{{id}}"
+                       class="btn btn-sm btn-outline-primary w-100">Profil</a>
+                    <a href="/addfriends/{{id}}" class="btn d-inline-flex btn-sm btn-primary w-100 ml-2">
+                        Ajouter
+                    </a>
+                </div>
 
             </div>
         </div>

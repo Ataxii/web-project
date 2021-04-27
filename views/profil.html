@@ -1,7 +1,6 @@
 {{> header}}
 
 
-
 <div class="row py-5 px-4">
     <div class="col-md-8 mx-auto">
         <div class="shadow rounded overflow-hidden" style=" background-color: #dfd3c3">
@@ -20,16 +19,16 @@
             <div class=" p-4 d-flex text-center" style="background-color: #f0ece2">
                 <ul class="list-inline mb-0">
                     <li class="list-inline-item">
-                        <h5 class=" font-weight-bold mb-0 d-block">{{infoUser.univ}}</h5>
+                        <h5 class=" font-weight-bold mb-0 d-block">Université : {{infoUser.univ}}</h5>
                     </li>
                 </ul>
             </div>
             <div class="px-4 py-3">
                 <h5 class="mb-1">A propos</h5>
                 <div class="p-4 rounded shadow-sm " style="background-color: #f0ece2">
-                    <p class="font-italic mb-0">{{infoUser.biographie}}</p>
-                    <p class="font-italic mb-0">{{infoUser.etudes}}</p>
-                    <p class="font-italic mb-0">{{infoUser.contact}}</p>
+                    <p class="font-italic mb-0">Bio : {{infoUser.biographie}}</p>
+                    <p class="font-italic mb-0">Etude : {{infoUser.etudes}}</p>
+                    <p class="font-italic mb-0">Contact : {{infoUser.contact}}</p>
                 </div>
             </div>
             <div class="py-4 px-4">
@@ -47,23 +46,21 @@
 
                     {{#infoFriends}}
 
-
-
-                        <div class="card p-3">
-                            <div class="d-flex align-items-center">
-                                <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="155"></div>
-                                <div class="ml-3 w-100">
-                                    <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
-                                    <div class="button mt-2 d-flex flex-row align-items-center">
-                                        <a href="/profilUser/{{id}}"
-                                           class="btn btn-sm btn-outline-primary w-100">Profil</a>
-                                        <a href="/delfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2">
-                                            Supprimer
-                                        </a>
-                                    </div>
+                    <div class="card p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="155"></div>
+                            <div class="ml-3 w-100">
+                                <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
+                                <div class="button mt-2 d-flex flex-row align-items-center">
+                                    <a href="/profilUser/{{id}}"
+                                       class="btn btn-sm btn-outline-primary w-100">Profil</a>
+                                    <a href="/delfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2">
+                                        Supprimer
+                                    </a>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                     </a>
                     {{/infoFriends}}
@@ -82,22 +79,21 @@
                     {{#infoRequest}}
 
 
-
-                        <div class="card p-3">
-                            <div class="align-items-center">
-                                <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="100"></div>
-                                <div class="ml-3 w-100">
-                                    <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
-                                    <div class="button mt-2 d-flex flex-row align-items-center">
-                                        <a href="/profilUser/{{id}}"
-                                           class="btn btn-sm btn-outline-primary w-100">Profil</a>
-                                        <a href="/addfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2">
-                                            Ajouter
-                                        </a>
-                                    </div>
+                    <div class="card p-3">
+                        <div class="align-items-center">
+                            <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="100"></div>
+                            <div class="ml-3 w-100">
+                                <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
+                                <div class="button mt-2 d-flex flex-row align-items-center">
+                                    <a href="/profilUser/{{id}}"
+                                       class="btn btn-sm btn-outline-primary w-100">Profil</a>
+                                    <a href="/addfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2">
+                                        Ajouter
+                                    </a>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                     {{/infoRequest}}
                 </div>
