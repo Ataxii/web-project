@@ -63,7 +63,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-send"></i></span>
                         </div>
-                        <form action="">
+                        <form id="formMsg" action="">
                             <input autocomplete="off" id="msg" type="text" class="form-control"
                                    placeholder="Enter text here...">
                         </form>
@@ -87,8 +87,11 @@
         element = document.getElementById('scrollArea');
         element.scrollTop = element.scrollHeight;
 
-        $("form").submit(function (e) {//emission du message au serveur
+        $("#formMsg").submit(function (e) {//emission du message au serveur
             e.preventDefault();
+            if ($("#msg").val().length === 0){
+                return false;
+            }
             socket.emit('chat message', {chatID: chatid, msg: $("#msg").val()});
             $("#msg").val("");
             return false;

@@ -1,6 +1,5 @@
 {{> header}}
 
-
 <div class="row py-5 px-4">
     <div class="col-md-8 mx-auto">
         <div class="shadow rounded overflow-hidden" style=" background-color: #dfd3c3">
@@ -31,76 +30,66 @@
                     <p class="font-italic mb-0">Contact : {{infoUser.contact}}</p>
                 </div>
             </div>
-            <div class="py-4 px-4">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h5 class="mb-0">Amis</h5>
-                </div>
 
-                <a class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-                    <svg class="bi me-2" width="30" height="24">
-                        <use xlink:href="#bootstrap"></use>
-                    </svg>
-                    <span class="fs-5 fw-semibold">Votre liste d'amis</span>
-                </a>
-                <div class="list-group list-group-flush border-bottom scrollarea">
-
-                    {{#infoFriends}}
-
-                    <div class="card p-3">
-                        <div class="d-flex align-items-center">
-                            <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="155"></div>
-                            <div class="ml-3 w-100">
-                                <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
-                                <div class="button mt-2 d-flex flex-row align-items-center">
-                                    <a href="/profilUser/{{id}}"
-                                       class="btn btn-sm btn-outline-primary w-100">Profil</a>
-                                    <a href="/delfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2">
-                                        Supprimer
-                                    </a>
+            <p class="align-items-center ml-4">
+                <a class="btn btn-secondary" data-toggle="collapse" href="#multiCollapseExample1" role="button"
+                   aria-expanded="true" aria-controls="multiCollapseExample1">Amis</a>
+                <button class="btn btn-secondary" type="button" data-toggle="collapse"
+                        data-target="#multiCollapseExample2" aria-expanded="true" aria-controls="multiCollapseExample2">
+                    Demandes
+                </button>
+            </p>
+            <div class="row justify-content-center">
+                <div class="collapse multi-collapse" id="multiCollapseExample1">
+                    <div class="card card-body mb-3 mr-2">
+                        <div class="list-group list-group-flush border-bottom scrollarea">
+                            {{#infoFriends}}
+                            <div class="card p-3 ">
+                                <div class="d-flex align-items-center">
+                                    <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="100"></div>
+                                    <div class="ml-3 w-100">
+                                        <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
+                                        <div class="button mt-2 d-flex flex-row align-items-center">
+                                            <a href="/profilUser/{{id}}"
+                                               class="btn btn-sm btn-outline-primary w-100">Profil</a>
+                                            <a href="/delfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2 mr-2">
+                                                Supprimer
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            {{/infoFriends}}
                         </div>
                     </div>
-
-                    </a>
-                    {{/infoFriends}}
                 </div>
 
-
-                <a class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-                    <svg class="bi me-2" width="30" height="24">
-                        <use xlink:href="#bootstrap"></use>
-                    </svg>
-                    <span class="fs-5 fw-semibold">Votre liste de requête</span>
-                </a>
-
-                <div class="list-group list-group-flush border-bottom scrollarea">
-
-                    {{#infoRequest}}
-
-
-                    <div class="card p-3">
-                        <div class="align-items-center">
-                            <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="100"></div>
-                            <div class="ml-3 w-100">
-                                <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
-                                <div class="button mt-2 d-flex flex-row align-items-center">
-                                    <a href="/profilUser/{{id}}"
-                                       class="btn btn-sm btn-outline-primary w-100">Profil</a>
-                                    <a href="/addfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2">
-                                        Ajouter
-                                    </a>
+                <div class="collapse multi-collapse" id="multiCollapseExample2">
+                    <div class="card card-body mb-3">
+                        <div class="list-group list-group-flush border-bottom scrollarea">
+                            {{#infoRequest}}
+                            <div class="card p-3">
+                                <div class="align-items-center">
+                                    <div class="image"><img src="{{photo_de_profil}}" class="rounded" width="100"></div>
+                                    <div class="ml-3 w-100">
+                                        <h4 class="mb-0 mt-0">{{nameUser}}</h4> <span>{{biographie}}</span>
+                                        <div class="button mt-2 d-flex flex-row align-items-center">
+                                            <a href="/profilUser/{{id}}"
+                                               class="btn btn-sm btn-outline-primary w-100">Profil</a>
+                                            <a href="/addfriends/{{id}}" class="btn btn-sm btn-primary w-100 ml-2 mr-2">
+                                                Ajouter
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            {{/infoRequest}}
                         </div>
                     </div>
-
-                    {{/infoRequest}}
                 </div>
             </div>
         </div>
     </div>
 </div>
-</body>
 
 {{> footer}}

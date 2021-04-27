@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,36 +13,38 @@
     <meta name="theme-color" content="#7952b3">
 
 </head>
-<body class="text-center mb-0">
+<body class="text-center m-3 p-4" style="background-color: #596e79">
+<div class="container mt-2 border border-dark w-25 mb-0 rounded" style="background-color: #dfd3c3">
+    <main class="form-signin row col align-self-center mx-0 mb-0 ">
+        <form action="/login" method="post" class="mx-auto">
+            <img class="mb-4 mt-2 "
+                 src="https://cdn.discordapp.com/attachments/821662951626506263/829013831627178055/schoolLink.svg" alt=""
+                 width="72" height="57">
+            <h1 class="h3 mb-3 fw-normal">Connexion</h1>
 
-<main class="form-signin row col align-self-center mb-0">
-    <form action="/login" method="post" class="mx-auto">
-        <img class="mb-4 mt-2"
-             src="https://cdn.discordapp.com/attachments/821662951626506263/829013831627178055/schoolLink.svg" alt=""
-             width="72" height="57">
-        <h1 class="h3 mb-3 fw-normal">Connexion</h1>
+            <div class="text-danger flex">
+                {{msg}}
+            </div>
 
-        <div class="text-danger flex">
-            {{msg}}
-        </div>
+            <div class="form-floating mt-5">
+                <label for="floatingInput">Pseudo</label>
+                <input type="text" class="form-control" placeholder="Identifiant" id="floatingInput" name="nameUser">
 
-        <div class="form-floating mt-5">
-            <label for="floatingInput">Pseudo</label>
-            <input type="text" class="form-control" placeholder="Identifiant" id="floatingInput" name="nameUser">
+            </div>
+            <div class="form-floating mt-3">
+                <label for="floatingPassword">Mot de passe</label>
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Mot de passe"
+                       name="passUser">
 
-        </div>
-        <div class="form-floating mt-3">
-            <label for="floatingPassword">Mot de passe</label>
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Mot de passe"
-                   name="passUser">
+            </div>
 
-        </div>
-
-        <button class="w-100 btn btn-lg btn-primary mt-4" type="submit">Connexion</button>
-        <p class="mt-5 mb-0 text-muted">&copy; 2021</p>
-    </form>
-</main>
-
-
+            <button class="w-100 btn btn-lg  mt-4 " style="background: #f0ece2" type="submit">Connexion</button>
+            <p class="mt-5 mb-0 text-muted">&copy; 2021</p>
+        </form>
+    </main>
+</div>
 </body>
+<style>
+
+</style>
 </html>

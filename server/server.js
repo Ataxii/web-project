@@ -43,8 +43,15 @@ function authenticated(req, res, next) {
     next();
 }
 
+function is_authenticated(req, res, next) {
+    if (req.session.user !== undefined) {
+        return next();
+    }
+    return res.status(401).send('Authentication required  <a class="btn btn-primary" href="/login" role="button">Connexion</a>');
+}
+
 function is_active(req, res, next) {
-    req.session.maxAge += 1000 * 60 * 10;
+    req.session.maxAge += 1000 * 60 * 5;
     next();
 }
 /**** ============  Routes pour l'utilisateur  ============ ****/
@@ -128,6 +135,7 @@ app.get('/profil', is_authenticated, is_active,  (req,res) => {
     let infoUser = model.userInfo(req.session.user);
     let infoFriends = model.allFriends(req.session.user);
     let infoRequest = model.allRequestIn(req.session.user);
+
     res.render('profil', {infoUser :infoUser, infoFriends : infoFriends, infoRequest: infoRequest});
 })
 
@@ -186,15 +194,9 @@ app.post('/modifications', is_authenticated, is_active,(req, res) => {
     res.redirect('/profil');
 });
 
-function is_authenticated(req, res, next) {
-    if (req.session.user !== undefined) {
-        return next();
-    }
-    return res.status(401).send('Authentication required  <a class="btn btn-primary" href="/login" role="button">Connexion</a>');
-}
+
 
 serveur.listen(3000, () => console.log('listening on http://localhost:3000'))
-
 
 
 /**** ============  Chat  ============ ****/
