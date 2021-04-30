@@ -8,11 +8,11 @@ const model = require('./model');
 
 const cookieSession = require('cookie-session');
 const session = cookieSession({
-    secret: 'mot-de-passe-du-cookie',
+    secret: '9KhfiosKskfnaw51paore20uCn',
     maxAge : 1000 * 60 * 10  //milli, sec, minutes
 
 })
-
+//savoir dans quelle root on etait avant de faire certaine fonctions
 var lastRoot = "";
 
 app.use(session);
@@ -43,6 +43,7 @@ function authenticated(req, res, next) {
     next();
 }
 
+//verifier que l'utilisateur est bien connecté
 function is_authenticated(req, res, next) {
     if (req.session.user !== undefined) {
         return next();
@@ -50,6 +51,7 @@ function is_authenticated(req, res, next) {
     return res.status(401).send('Authentication required  <a class="btn btn-primary" href="/login" role="button">Connexion</a>');
 }
 
+//renouveler la session
 function is_active(req, res, next) {
     req.session.maxAge += 1000 * 60 * 5;
     next();
@@ -85,7 +87,7 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    let login = model.login(req.body.nameUser, req.body.passUser); // login() return id
+    let login = model.login(req.body.nameUser, req.body.passUser); // login() return id ou 0 si erreur
     if (login === 0) {
         var msg = "nom d'utilisateur ou mot de passe incerrect"
         res.render('login', {msg: msg});
@@ -206,17 +208,20 @@ var people={};
 io.on('connection', (socket) => {
     //sauvegarder les id de se qui se connect
     let name = socket.request.session.user
+    //les id proviennent de socket.io et changent tout le temps
     people[name] = socket.id;
     socket.emit()
 
-    socket.on('chat message', (data) => {//ecoute du message
+    socket.on('chat message', (data) => {//ecoute du message emit par le script de l'utilisateur
 
         let chatID = data.chatID;
+        //cherche l'id de l'autre utlisateur qui est dans ce chat
         let otherID = model.otherID(chatID, name);
 
         //construction du message pour le sauvegarder
         let date1 = new Date();
 
+        //constructiond de la date en format utilisable
         let dateLocale = date1.toLocaleString('fr-FR',{
             year: 'numeric',
             month: 'long',
@@ -224,13 +229,14 @@ io.on('connection', (socket) => {
             hour: 'numeric',
             minute: 'numeric'});
 
+        //sauvegarde du message avec une forme special
         let saveMessage = dateLocale + " |> " + model.userInfo(name).nameUser + " : " + data.msg;
 
         model.addConversation(chatID, saveMessage);
 
         let newData = {msg: data.msg, info : model.userInfo(name)}
 
-        //les deux emit servent pour savoir si on met le message d'un coté ou de l'autre
+        //les deux emit servent pour savoir si on met le message d'un coté ou de l'autre pour chaque utilisateur
         io.to(people[name]).emit('chat message me', newData)
         io.to(people[otherID]).emit('chat message other', newData);//ici on renvoie le message a la page html, c'est ici qu'il faut gerer la fait que ce soit un utilisateur ou l'autre
 
@@ -257,7 +263,6 @@ app.get('/chat/:id', is_authenticated,is_active, (req, res) => {//id est id1 + i
 
 
 app.get('/chatHub', is_authenticated,is_active, (req, res) => {
-
     let infoUser = model.userInfo(req.session.user);
     let infoFriends = model.allFriends(req.session.user);
     res.render('chathub', {infoUser :infoUser, infoFriends : infoFriends});

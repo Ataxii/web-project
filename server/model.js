@@ -6,7 +6,7 @@ let db = new Sqlite('../sqLite/main.db');
 
 
 
-//sauvegarder le userID dans un fichié text
+//sauvegarder le userID dans un fichié text pour pas perdre la suite des futurs id
 exports.writeID = (id) => {
     db.prepare('DELETE FROM saveid').run();
     db.prepare('INSERT INTO saveid VALUES (@id)').run({id : id});
@@ -28,20 +28,21 @@ exports.universityList = () => {
     }
     return result
 }
-
+//enregistre l'utilisateur en regardant avant si il est pas deja enregistré
 exports.register = (nameUser, passUser) => {
     if (this.isRegister(nameUser)) {
         return false;
     }
-
     let prepare = db.prepare('INSERT INTO userLogin VALUES (@id, @nameUser, @passUser)');
     prepare.run({ id: idUser, nameUser: nameUser, passUser: passUser });
+    //on initialise l'utilisateur avec des valeur " " pour pas qu'il n'y ai d'erreur
     this.modification(idUser, " ", " ", " ", " ", " " );
     idUser++;
     this.writeID(idUser);
     return true;
 }
 
+//test si l'utilisateur est deja dans la base de donné
 exports.isRegister = (nameUser) => {
     let pseudolog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ?').get(nameUser);
 
@@ -49,6 +50,7 @@ exports.isRegister = (nameUser) => {
 
 }
 
+//test si l'utilisateur peut se connecter ( si il est deja inscrit) et si le mot de passe correspond à son profil
 exports.login = (nameUser, passUser) => {
     let idlog = db.prepare('SELECT id FROM userLogin WHERE nameUser = ? AND passUser = ?').get(nameUser, passUser);
     if(idlog === undefined){
@@ -60,14 +62,14 @@ exports.login = (nameUser, passUser) => {
     } else return 0;
 }
 
-
-
+//on a definie que le password serait de longueur > 8 pour assurer une certaine securité
 exports.lenghtPassword = ( passUser) => {
     if (passUser.length < 8){
         return -1;
     }
 }
-// fonction qui récup tout les utilisateurs (id, photo, pseudo) tableau de tableau+ recuperer les infos d'un utilisateur avec son id , + api centre d'interet (json -->parse --> require('fs')
+
+// fonction qui récup tout les utilisateurs (id, photo, pseudo, bio, univ) tableau de tableau
 exports.allUserInfo = (id) => {
 
     let array = [];
@@ -85,6 +87,7 @@ exports.allUserInfo = (id) => {
     return array;
 }
 
+// fonction qui récup tout les utilisateurs qui correspondent à la recherche (id, photo, pseudo, bio, univ) tableau de tableau
 exports.allUserInfoWithResearch = (id, research) => { //l'argument research est une string du nom
    //recuperation des id
     research = "%" + research + "%"
@@ -103,7 +106,7 @@ exports.allUserInfoWithResearch = (id, research) => { //l'argument research est 
     return array;
 }
 
-//
+//recupere toutes les infos possibles sur un seul utilisateur
 exports.userInfo = (id) => {
 
     let pseudo = db.prepare('SELECT nameUser FROM userLogin WHERE id = ? ').get(id);
@@ -139,7 +142,7 @@ exports.userInfo = (id) => {
     };
 }
 
-// fonction create/ set avec un id et tout les infos,
+// fonction de modification avec un id et tout les infos,
 exports.modification = (id, photo, biographie, etudes, contact, univ)=> {
 
     var deleting = db.prepare('DELETE FROM userProfil WHERE id = ' + id).run();
@@ -149,8 +152,11 @@ exports.modification = (id, photo, biographie, etudes, contact, univ)=> {
 }
 
 /*** partie friends***/
+/** EXPLICATION : il n'y a pas 2 etats (demande d'ami et ami) il y a seulement des demandes d'ami, la personne A demande à B
+ * si il peut etre son ami, tant que B ne demande pas à A d'être son ami alors ca reste une demande, si B envoi un demande aussi
+ * alors A et B sont amis**/
 
-//concidere comme requete quand ils sont ami que dans un sens, concidere ami quand ils sont ami dans les 2 sens
+//concidéré comme requète quand ils sont amis que dans un sens, concidéré ami quand ils sont amis dans les 2 sens
 exports.request = (id, idOtherUser )=> {
 
     if (this.isRequest(id, idOtherUser)){
@@ -162,18 +168,21 @@ exports.request = (id, idOtherUser )=> {
     return true;
 }
 
+//si il existe une ligne pour chaque demande alors c'est qu'ils sont amis
 exports.isFriends = (id, idOtherUser )=> {
     let testOtherId = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(idOtherUser, id);
     let testOtherId2 = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(id, idOtherUser);
     return testOtherId !== undefined && testOtherId2 !== undefined;
 }
 
+//si il y en a qu'une sur 2 alors ils sont sur demande et donc non amis
 exports.isRequest = (idUse, idOtherUser )=> {
     let testOtherId = db.prepare('SELECT id FROM userFriends WHERE  id = ? and friends = ?').get(idUse, idOtherUser);
     let testOtherId2 = db.prepare('SELECT id FROM userFriends WHERE friends = ? and id = ?').get(idUse, idOtherUser);
     return testOtherId !== undefined && testOtherId2 === undefined;
 }
 
+//recuperation de tous les amis d'un utilisateur
 exports.allFriends = (id) => {
     let array = [];
     var ids = db.prepare('SELECT friends FROM userFriends where id = ?').all(id);
@@ -193,6 +202,7 @@ exports.allFriends = (id) => {
     return array;
 }
 
+//recupere toutes les demandes d'un utlisateur
 exports.allRequestIn = (id) => {
     let array = [];
     var ids = db.prepare('SELECT id FROM userFriends where friends = ?').all(id);
@@ -213,17 +223,19 @@ exports.allRequestIn = (id) => {
     return array;
 }
 
-
+//supprime un utilisisateur
 exports.delete = (id, idOtherUser )=> {
     db.prepare('DELETE FROM userFriends WHERE friends = ? and id = ?').run(idOtherUser, id);
 }
 
 ////CHAT///////
 
+//sauvegarde du chat
 exports.addConversation = (id, text)=> {// id du chat et le text dans le quel le nom de l'utilisateur est marqué
     db.prepare('INSERT INTO chat VALUES(@idchat, @message)').run({idchat : id,  message : text});
 }
 
+//recuperation / creation de l'id de room pour 2 utilisateurs amis
 exports.roomID = (id1, id2)=> {// renvoie la concatenation de id1 et id2, concaténé en ordre croissant
     let result = "";
     if(id1 > id2){
@@ -232,6 +244,7 @@ exports.roomID = (id1, id2)=> {// renvoie la concatenation de id1 et id2, concat
     return result + id1 + id2;
 }
 
+//recupere la conversation d'une room
 exports.getConversation = (id)=> {
     return db.prepare('SELECT message FROM chat WHERE idchat = ? ').all(id)
 }
